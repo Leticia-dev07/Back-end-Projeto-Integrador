@@ -9,13 +9,15 @@ public class Aluno extends User{
 	
 	private static final long serialVersionUID = 1L;
 	private String matricula;
+	private String turma;
 	
 	public Aluno(){
 	}
 
-	public Aluno(Long id, String name, String email, String senhaHash, String matricula) {
+	public Aluno(Long id, String name, String email, String senhaHash, String matricula, String turma) {
 		super(id, name, email, senhaHash);
 		this.matricula = matricula;
+		this.setTurma(turma);
 	}
 
 	public String getMatricula() {
@@ -24,6 +26,14 @@ public class Aluno extends User{
 
 	public void setMatricula(String matricula) {
 		this.matricula = matricula;
+	}
+
+	public String getTurma() {
+		return turma;
+	}
+
+	public void setTurma(String turma) {
+		this.turma = turma;
 	}
 	
 }
