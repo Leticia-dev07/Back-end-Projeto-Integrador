@@ -1,6 +1,7 @@
 package com.senac.pi.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 import jakarta.persistence.Entity;
@@ -10,24 +11,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_curso")
-public class Curso implements Serializable{
+@Table(name = "tb_submissao")
+public class Submissao implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String nome;
-	private Integer cargaHorariaMax;
+	private Instant dataEnvio;
+	private String status;
 	
-	public Curso() {
+	public Submissao() {
 	}
-
-	public Curso(Long id, String nome, Integer cargaHorariaMax) {
+	
+	public Submissao(Long id, Instant dataEnvio, String status) {
 		super();
 		this.id = id;
-		this.nome = nome;
-		this.cargaHorariaMax = cargaHorariaMax;
+		this.dataEnvio = dataEnvio;
+		this.status = status;
 	}
 
 	public Long getId() {
@@ -38,20 +39,20 @@ public class Curso implements Serializable{
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public Instant getDataEnvio() {
+		return dataEnvio;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setDataEnvio(Instant dataEnvio) {
+		this.dataEnvio = dataEnvio;
 	}
 
-	public Integer getCargaHorariaMax() {
-		return cargaHorariaMax;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setCargaHorariaMax(Integer cargaHorariaMax) {
-		this.cargaHorariaMax = cargaHorariaMax;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	@Override
@@ -67,9 +68,8 @@ public class Curso implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Curso other = (Curso) obj;
+		Submissao other = (Submissao) obj;
 		return Objects.equals(id, other.id);
 	}
-	
 	
 }

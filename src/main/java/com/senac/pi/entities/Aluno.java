@@ -17,7 +17,7 @@ public class Aluno extends User{
 	public Aluno(Long id, String name, String email, String senhaHash, String matricula, String turma) {
 		super(id, name, email, senhaHash);
 		this.matricula = matricula;
-		this.setTurma(turma);
+		this.turma = turma;
 	}
 
 	public String getMatricula() {
