@@ -3,84 +3,90 @@ package com.senac.pi.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_notificacao_email")
-public class NotificacaoEmail implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class NotificacaoEmail implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private String destinatario;
-	private String assunto;
-	private String corpo;
-	
-	public NotificacaoEmail() {
-	}
+    private static final long serialVersionUID = 1L;
 
-	public NotificacaoEmail(Long id, String destinatario, String assunto, String corpo) {
-		super();
-		this.id = id;
-		this.destinatario = destinatario;
-		this.assunto = assunto;
-		this.corpo = corpo;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public Long getId() {
-		return id;
-	}
+    private String destinatario;
+    private String assunto;
+    private String corpo;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // 🔥 RELAÇÃO COM SUBMISSÃO
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "submissao_id")
+    private Submissao submissao;
 
-	public String getDestinatario() {
-		return destinatario;
-	}
+    public NotificacaoEmail() {
+    }
 
-	public void setDestinatario(String destinatario) {
-		this.destinatario = destinatario;
-	}
+    public NotificacaoEmail(Long id, String destinatario, String assunto, String corpo) {
+        this.id = id;
+        this.destinatario = destinatario;
+        this.assunto = assunto;
+        this.corpo = corpo;
+    }
 
-	public String getAssunto() {
-		return assunto;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setAssunto(String assunto) {
-		this.assunto = assunto;
-	}
+    public String getDestinatario() {
+        return destinatario;
+    }
 
-	public String getCorpo() {
-		return corpo;
-	}
+    public String getAssunto() {
+        return assunto;
+    }
 
-	public void setCorpo(String corpo) {
-		this.corpo = corpo;
-	}
+    public String getCorpo() {
+        return corpo;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    public Submissao getSubmissao() {
+        return submissao;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		NotificacaoEmail other = (NotificacaoEmail) obj;
-		return Objects.equals(id, other.id);
-	}
-	
-	
-	
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setDestinatario(String destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    public void setAssunto(String assunto) {
+        this.assunto = assunto;
+    }
+
+    public void setCorpo(String corpo) {
+        this.corpo = corpo;
+    }
+
+    public void setSubmissao(Submissao submissao) {
+        this.submissao = submissao;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof NotificacaoEmail)) return false;
+        NotificacaoEmail other = (NotificacaoEmail) obj;
+        return Objects.equals(id, other.id);
+    }
 }

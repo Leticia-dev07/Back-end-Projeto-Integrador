@@ -3,80 +3,90 @@ package com.senac.pi.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_regra_atividade")
-public class RegraAtividade implements Serializable{
-	private static final long serialVersionUID = 1L;
+public class RegraAtividade implements Serializable {
 
-	private Long id;
-	private String area;
-	private Integer limiteHoras;
-	private Boolean exigeCompravante;
-	
-	public RegraAtividade() {
-	}
+    private static final long serialVersionUID = 1L;
 
-	public RegraAtividade(Long id, String area, Integer limiteHoras, Boolean exigeCompravante) {
-		super();
-		this.id = id;
-		this.area = area;
-		this.limiteHoras = limiteHoras;
-		this.exigeCompravante = exigeCompravante;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public Long getId() {
-		return id;
-	}
+    private String area;
+    private Integer limiteHoras;
+    private Boolean exigeComprovante;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // 🔥 RELACIONAMENTO COM CURSO (OBRIGATÓRIO PELO DIAGRAMA)
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    private Curso curso;
 
-	public String getArea() {
-		return area;
-	}
+    public RegraAtividade() {
+    }
 
-	public void setArea(String area) {
-		this.area = area;
-	}
+    public RegraAtividade(Long id, String area, Integer limiteHoras, Boolean exigeComprovante) {
+        this.id = id;
+        this.area = area;
+        this.limiteHoras = limiteHoras;
+        this.exigeComprovante = exigeComprovante;
+    }
 
-	public Integer getLimiteHoras() {
-		return limiteHoras;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setLimiteHoras(Integer limiteHoras) {
-		this.limiteHoras = limiteHoras;
-	}
+    public String getArea() {
+        return area;
+    }
 
-	public Boolean getExigeCompravante() {
-		return exigeCompravante;
-	}
+    public Integer getLimiteHoras() {
+        return limiteHoras;
+    }
 
-	public void setExigeCompravante(Boolean exigeCompravante) {
-		this.exigeCompravante = exigeCompravante;
-	}
+    public Boolean getExigeComprovante() {
+        return exigeComprovante;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(area, exigeCompravante, id, limiteHoras);
-	}
+    public Curso getCurso() {
+        return curso;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RegraAtividade other = (RegraAtividade) obj;
-		return Objects.equals(area, other.area) && Objects.equals(exigeCompravante, other.exigeCompravante)
-				&& Objects.equals(id, other.id) && Objects.equals(limiteHoras, other.limiteHoras);
-	}
-	
-	
-	
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public void setLimiteHoras(Integer limiteHoras) {
+        this.limiteHoras = limiteHoras;
+    }
+
+    public void setExigeComprovante(Boolean exigeComprovante) {
+        this.exigeComprovante = exigeComprovante;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof RegraAtividade)) return false;
+        RegraAtividade other = (RegraAtividade) obj;
+        return Objects.equals(id, other.id);
+    }
 }

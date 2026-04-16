@@ -9,28 +9,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.senac.pi.entities.User;
-import com.senac.pi.repositories.UserRepository;
+import com.senac.pi.entities.RegraAtividade;
+import com.senac.pi.repositories.RegraAtividadeRepository;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/regraAtividades")
 public class RegraAtividadeResource {
-	
-	@Autowired
-	private UserRepository repository;
 
-	//buscar todos
+	@Autowired
+	private RegraAtividadeRepository repository;
+
+	// buscar todos
 	@GetMapping
-	public ResponseEntity<List<User>> findAll(){
-		List<User> list = repository.findAll();
+	public ResponseEntity<List<RegraAtividade>> findAll() {
+		List<RegraAtividade> list = repository.findAll();
 		return ResponseEntity.ok().body(list);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<User> findById(@PathVariable Long id){
-		User obj = repository.findById(id).orElseThrow();
+	public ResponseEntity<RegraAtividade> findById(@PathVariable Long id) {
+		RegraAtividade obj = repository.findById(id).orElseThrow();
 		return ResponseEntity.ok().body(obj);
 	}
-	
-	
+
 }
