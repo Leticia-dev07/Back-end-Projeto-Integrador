@@ -2,63 +2,52 @@ package com.senac.pi.resources;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.senac.pi.DTO.CursoDTO;
 import com.senac.pi.entities.Curso;
-import com.senac.pi.repositories.CursoRepository;
+import com.senac.pi.services.CursoService;
 
 @RestController
 @RequestMapping("/cursos")
 public class CursoResource {
 
     @Autowired
-    private CursoRepository repository;
+    private CursoService service;
 
     @GetMapping
-    public ResponseEntity<List<Curso>> findAll() {
-        return ResponseEntity.ok(repository.findAll());
+    public ResponseEntity<List<CursoDTO>> findAll() {
+        List<CursoDTO> list = service.findAll();
+        return ResponseEntity.ok().body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> findById(@PathVariable Long id) {
-        Optional<Curso> curso = repository.findById(id);
-        return curso.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<CursoDTO> findById(@PathVariable Long id) {
+        CursoDTO dto = service.findById(id);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping
-    public ResponseEntity<Curso> insert(@RequestBody Curso curso) {
-        curso = repository.save(curso);
-        URI uri = URI.create("/cursos/" + curso.getId());
-        return ResponseEntity.created(uri).body(curso);
+    public ResponseEntity<CursoDTO> insert(@RequestBody Curso obj) {
+        CursoDTO dto = service.insert(obj);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Curso> update(@PathVariable Long id, @RequestBody Curso obj) {
-        Optional<Curso> optional = repository.findById(id);
-
-        if (optional.isPresent()) {
-            Curso entity = optional.get();
-
-            entity.setNome(obj.getNome());
-            entity.setCargaHorariaMax(obj.getCargaHorariaMax());
-
-            return ResponseEntity.ok(repository.save(entity));
-        }
-
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<CursoDTO> update(@PathVariable Long id, @RequestBody Curso obj) {
+        CursoDTO dto = service.update(id, obj);
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

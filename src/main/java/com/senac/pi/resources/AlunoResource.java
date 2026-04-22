@@ -2,66 +2,75 @@ package com.senac.pi.resources;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.senac.pi.entities.Aluno;
-import com.senac.pi.repositories.AlunoRepository;
+import com.senac.pi.DTO.AlunoDTO;
+import com.senac.pi.services.AlunoService;
 
 @RestController
-@RequestMapping("/alunos")
+@RequestMapping(value = "/alunos")
 public class AlunoResource {
 
     @Autowired
-    private AlunoRepository repository;
+    private AlunoService service;
 
+    /**
+     * Retorna a lista de todos os alunos convertidos em DTO.
+     */
     @GetMapping
-    public ResponseEntity<List<Aluno>> findAll() {
-        return ResponseEntity.ok(repository.findAll());
+    public ResponseEntity<List<AlunoDTO>> findAll() {
+        List<AlunoDTO> list = service.findAll();
+        return ResponseEntity.ok().body(list);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Aluno> findById(@PathVariable Long id) {
-        Optional<Aluno> aluno = repository.findById(id);
-        return aluno.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    /**
+     * Busca um aluno por ID.
+     */
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<AlunoDTO> findById(@PathVariable Long id) {
+        AlunoDTO dto = service.findById(id);
+        return ResponseEntity.ok().body(dto);
     }
 
+    /**
+     * Insere um novo aluno. 
+     * Retorna o status 201 (Created) e a localização do novo recurso.
+     */
     @PostMapping
-    public ResponseEntity<Aluno> insert(@RequestBody Aluno aluno) {
-        aluno = repository.save(aluno);
-        URI uri = URI.create("/alunos/" + aluno.getId());
-        return ResponseEntity.created(uri).body(aluno);
+    public ResponseEntity<AlunoDTO> insert(@RequestBody AlunoDTO dto) {
+        dto = service.insert(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Aluno> update(@PathVariable Long id, @RequestBody Aluno obj) {
-        Optional<Aluno> optional = repository.findById(id);
-
-        if (optional.isPresent()) {
-            Aluno entity = optional.get();
-
-            entity.setName(obj.getName());
-            entity.setEmail(obj.getEmail());
-            entity.setSenhaHash(obj.getSenhaHash());
-            entity.setMatricula(obj.getMatricula());
-            entity.setTurma(obj.getTurma());
-
-            return ResponseEntity.ok(repository.save(entity));
-        }
-
-        return ResponseEntity.notFound().build();
+    /**
+     * Atualiza um aluno existente.
+     */
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<AlunoDTO> update(@PathVariable Long id, @RequestBody AlunoDTO dto) {
+        dto = service.update(id, dto);
+        return ResponseEntity.ok().body(dto);
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Deleta um aluno por ID.
+     * Retorna o status 204 (No Content).
+     */
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
