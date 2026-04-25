@@ -2,144 +2,140 @@ package com.senac.pi.entities;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.senac.pi.entities.enums.StatusSubmissao;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_submissao")
 public class Submissao implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-    private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	private Instant dataEnvio;
+	private Integer status;
 
-    private Instant dataEnvio;
-    private String status;
+	private Integer horasAproveitadas;
+	private String observacaoCoordenador;
 
-    // 🔹 RELAÇÃO COM ALUNO (muitas submissões para 1 aluno)
+	@ManyToOne
+    @JoinColumn(name = "coordenador_id")
+    private Coordenador coordenador; 
+
     @ManyToOne
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
 
-    // 🔹 RELAÇÃO COM COORDENADOR (quem valida)
-    @ManyToOne
-    @JoinColumn(name = "coordenador_id")
-    private Coordenador coordenador;
+	@ManyToOne
+	@JoinColumn(name = "categoria_id")
+	private Categoria categoria;
 
-    // 🔹 RELAÇÃO COM ATIVIDADE (1 para 1)
-    @ManyToOne
-    @JoinColumn(name = "atividade_id")
-    private AtividadeComplementar atividade;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "certificado_id")
+	private Certificado certificado;
 
-    // 🔹 RELAÇÃO COM CERTIFICADO (opcional)
-    @OneToOne
-    @JoinColumn(name = "certificado_id")
-    private Certificado certificado;
+	public Submissao() {
+	}
 
-    // 🔹 RELAÇÃO COM NOTIFICAÇÕES
-    @JsonIgnore
-    @OneToMany(mappedBy = "submissao")
-    private Set<NotificacaoEmail> notificacoes = new HashSet<>();
+	public Submissao(Long id, Instant dataEnvio, StatusSubmissao status, Integer horasAproveitadas,
+			String observacaoCoordenador, Aluno aluno, Categoria categoria) {
+		this.id = id;
+		this.dataEnvio = dataEnvio;
+		setStatus(status);
+		this.horasAproveitadas = horasAproveitadas;
+		this.observacaoCoordenador = observacaoCoordenador;
+		this.aluno = aluno;
+		this.categoria = categoria;
+	}
 
-    public Submissao() {
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public Submissao(Long id, Instant dataEnvio, String status) {
-        this.id = id;
-        this.dataEnvio = dataEnvio;
-        this.status = status;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Instant getDataEnvio() {
+		return dataEnvio;
+	}
 
-    public Instant getDataEnvio() {
-        return dataEnvio;
-    }
+	public void setDataEnvio(Instant dataEnvio) {
+		this.dataEnvio = dataEnvio;
+	}
 
-    public String getStatus() {
-        return status;
-    }
+	public StatusSubmissao getStatus() {
+		return status != null ? StatusSubmissao.valueOf(status) : null;
+	}
 
-    public Aluno getAluno() {
-        return aluno;
-    }
+	public void setStatus(StatusSubmissao status) {
+		if (status != null)
+			this.status = status.getCode();
+	}
 
-    public Coordenador getCoordenador() {
+	public Integer getHorasAproveitadas() {
+		return horasAproveitadas;
+	}
+
+	public void setHorasAproveitadas(Integer horasAproveitadas) {
+		this.horasAproveitadas = horasAproveitadas;
+	}
+
+	public String getObservacaoCoordenador() {
+		return observacaoCoordenador;
+	}
+
+	public void setObservacaoCoordenador(String observacaoCoordenador) {
+		this.observacaoCoordenador = observacaoCoordenador;
+	}
+	
+	public Coordenador getCoordenador() {
         return coordenador;
-    }
-
-    public AtividadeComplementar getAtividade() {
-        return atividade;
-    }
-
-    public Certificado getCertificado() {
-        return certificado;
-    }
-
-    public Set<NotificacaoEmail> getNotificacoes() {
-        return notificacoes;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDataEnvio(Instant dataEnvio) {
-        this.dataEnvio = dataEnvio;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
     }
 
     public void setCoordenador(Coordenador coordenador) {
         this.coordenador = coordenador;
     }
 
-    public void setAtividade(AtividadeComplementar atividade) {
-        this.atividade = atividade;
-    }
+	public Aluno getAluno() {
+		return aluno;
+	}
 
-    public void setCertificado(Certificado certificado) {
-        this.certificado = certificado;
-    }
+	public void setAluno(Aluno aluno) {
+		this.aluno = aluno;
+	}
 
-    public void setNotificacoes(Set<NotificacaoEmail> notificacoes) {
-        this.notificacoes = notificacoes;
-    }
+	public Categoria getCategoria() {
+		return categoria;
+	}
 
-    // ✅ Métodos auxiliares
-    public void addNotificacao(NotificacaoEmail notificacao) {
-        notificacoes.add(notificacao);
-    }
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
 
-    public void removeNotificacao(NotificacaoEmail notificacao) {
-        notificacoes.remove(notificacao);
-    }
+	public Certificado getCertificado() {
+		return certificado;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	public void setCertificado(Certificado certificado) {
+		this.certificado = certificado;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Submissao)) return false;
-        Submissao other = (Submissao) obj;
-        return Objects.equals(id, other.id);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Submissao))
+			return false;
+		Submissao other = (Submissao) obj;
+		return Objects.equals(id, other.id);
+	}
 }

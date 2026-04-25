@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.senac.pi.DTO.SuperAdminDTO;
 import com.senac.pi.entities.SuperAdmin;
+import com.senac.pi.entities.enums.UserRole;
 import com.senac.pi.repositories.SuperAdminRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -34,6 +35,7 @@ public class SuperAdminService {
 
     @Transactional
     public SuperAdminDTO insert(SuperAdmin obj) {
+        obj.setRole(UserRole.ADMIN); 
         obj = repository.save(obj);
         return new SuperAdminDTO(obj);
     }

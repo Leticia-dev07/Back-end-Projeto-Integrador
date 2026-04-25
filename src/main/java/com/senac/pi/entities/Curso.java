@@ -7,7 +7,16 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_curso")
@@ -19,10 +28,14 @@ public class Curso implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String nome;
+    
+    private String descricao;
+
     private Integer cargaHorariaMax;
 
-    @JsonIgnore // ⚠️ evita loop infinito
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "tb_curso_aluno",
@@ -40,14 +53,15 @@ public class Curso implements Serializable {
     private Set<Coordenador> coordenadores = new HashSet<>();
     
     @OneToMany(mappedBy = "curso")
-    private Set<RegraAtividade> regras = new HashSet<>();
+    private Set<Categoria> categoria = new HashSet<>();
 
     public Curso() {
     }
 
-    public Curso(Long id, String nome, Integer cargaHorariaMax) {
+    public Curso(Long id, String nome, String descricao, Integer cargaHorariaMax) {
         this.id = id;
         this.nome = nome;
+        this.descricao = descricao;
         this.cargaHorariaMax = cargaHorariaMax;
     }
 
@@ -57,6 +71,10 @@ public class Curso implements Serializable {
 
     public String getNome() {
         return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 
     public Integer getCargaHorariaMax() {
@@ -71,11 +89,14 @@ public class Curso implements Serializable {
         this.nome = nome;
     }
 
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
     public void setCargaHorariaMax(Integer cargaHorariaMax) {
         this.cargaHorariaMax = cargaHorariaMax;
     }
 
-    // ✅ Getters importantes
     public Set<Aluno> getAlunos() {
         return alunos;
     }
@@ -84,11 +105,10 @@ public class Curso implements Serializable {
         return coordenadores;
     }
     
-    public Set<RegraAtividade> getRegras() {
-        return regras;
+    public Set<Categoria> getCategoria() {
+        return categoria;
     }
 
-    // ✅ Métodos auxiliares
     public void addAluno(Aluno aluno) {
         alunos.add(aluno);
     }

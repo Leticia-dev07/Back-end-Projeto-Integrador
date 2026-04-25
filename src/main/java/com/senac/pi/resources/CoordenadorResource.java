@@ -38,6 +38,12 @@ public class CoordenadorResource {
                 .buildAndExpand(dto.id()).toUri(); // No Record, acessamos .id() em vez de .getId()
         return ResponseEntity.created(uri).body(dto);
     }
+    
+    @PostMapping(value = "/{coordId}/cursos/{cursoId}")
+    public ResponseEntity<Void> vincularCurso(@PathVariable Long coordId, @PathVariable Long cursoId) {
+        service.vincularCurso(coordId, cursoId);
+        return ResponseEntity.noContent().build();
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<CoordenadorDTO> update(@PathVariable Long id, @RequestBody Coordenador obj) {

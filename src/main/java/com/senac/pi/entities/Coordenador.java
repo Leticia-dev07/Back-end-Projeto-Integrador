@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.senac.pi.entities.enums.UserRole;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -20,6 +21,7 @@ public class Coordenador extends User {
     @ManyToMany(mappedBy = "coordenadores")
     private Set<Curso> cursos = new HashSet<>();
     
+    @JsonIgnore
     @OneToMany(mappedBy = "coordenador")
     private Set<Submissao> submissoes = new HashSet<>();
 
@@ -27,7 +29,7 @@ public class Coordenador extends User {
     }
 
     public Coordenador(Long id, String name, String email, String senhaHash) {
-        super(id, name, email, senhaHash);
+        super(id, name, email, senhaHash, UserRole.COORDENADOR);
     }
 
     // ✅ Getter IMPORTANTE

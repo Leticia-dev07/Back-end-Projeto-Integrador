@@ -1,5 +1,7 @@
 package com.senac.pi.entities;
 
+import com.senac.pi.entities.enums.UserRole;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
@@ -13,7 +15,7 @@ public class SuperAdmin extends User {
 	}
 
 	public SuperAdmin(Long id, String name, String email, String senhaHash) {
-		super(id, name, email, senhaHash);
+	    super(id, name, email, senhaHash, UserRole.ADMIN);
 	}
 	
 	

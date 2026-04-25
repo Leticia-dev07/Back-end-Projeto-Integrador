@@ -1,35 +1,61 @@
 package com.senac.pi.resources;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.senac.pi.DTO.SubmissaoDTO;
 import com.senac.pi.entities.Submissao;
-import com.senac.pi.repositories.SubmissaoRepository;
+import com.senac.pi.services.SubmissaoService;
 
 @RestController
-@RequestMapping(value = "/submissaos")
+@RequestMapping(value = "/submissoes")
 public class SubmissaoResource {
 
-	@Autowired
-	private SubmissaoRepository repository;
+    @Autowired
+    private SubmissaoService service;
 
-	// buscar todos
-	@GetMapping
-	public ResponseEntity<List<Submissao>> findAll() {
-		List<Submissao> list = repository.findAll();
-		return ResponseEntity.ok().body(list);
-	}
+    @GetMapping
+    public ResponseEntity<List<SubmissaoDTO>> findAll() {
+        List<SubmissaoDTO> list = service.findAll();
+        return ResponseEntity.ok().body(list);
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Submissao> findById(@PathVariable Long id) {
-		Submissao obj = repository.findById(id).orElseThrow();
-		return ResponseEntity.ok().body(obj);
-	}
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<SubmissaoDTO> findById(@PathVariable Long id) {
+        SubmissaoDTO dto = service.findById(id);
+        return ResponseEntity.ok().body(dto);
+    }
 
+    // ATUALIZADO: Agora aceita Multipart (JSON + Arquivo)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SubmissaoDTO> insert(
+            @RequestPart("submissao") Submissao obj, 
+            @RequestPart("file") MultipartFile file) {
+        
+        // Agora chamamos o service passando os dois parâmetros
+        SubmissaoDTO dto = service.insert(obj, file);
+        
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
+    }
+
+    @PutMapping(value = "/{id}/aprovar")
+    public ResponseEntity<SubmissaoDTO> aprovar(@PathVariable Long id) {
+        SubmissaoDTO dto = service.aprovar(id);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping(value = "/{id}/rejeitar")
+    public ResponseEntity<SubmissaoDTO> rejeitar(@PathVariable Long id, @RequestBody String observacao) {
+        SubmissaoDTO dto = service.rejeitar(id, observacao);
+        return ResponseEntity.ok().body(dto);
+    }
 }

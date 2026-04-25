@@ -9,28 +9,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.senac.pi.entities.User;
-import com.senac.pi.repositories.UserRepository;
+import com.senac.pi.DTO.UserDTO;
+import com.senac.pi.services.UserService;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
 	
-	@Autowired
-	private UserRepository repository;
+    @Autowired
+    private UserService service;
 
-	//buscar todos
-	@GetMapping
-	public ResponseEntity<List<User>> findAll(){
-		List<User> list = repository.findAll();
-		return ResponseEntity.ok().body(list);
-	}
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> findAll(){
+        List<UserDTO> list = service.findAll();
+        return ResponseEntity.ok().body(list);
+    }
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<User> findById(@PathVariable Long id){
-		User obj = repository.findById(id).orElseThrow();
-		return ResponseEntity.ok().body(obj);
-	}
-	
-	
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> findById(@PathVariable Long id){
+        UserDTO dto = service.findById(id);
+        return ResponseEntity.ok().body(dto);
+    }
 }

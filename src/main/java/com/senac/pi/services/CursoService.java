@@ -34,6 +34,11 @@ public class CursoService {
 
     @Transactional
     public CursoDTO insert(Curso obj) {
+        // REGRA DE NEGÓCIO: Verificar se o nome já existe
+        if (repository.existsByNome(obj.getNome())) {
+            throw new RuntimeException("Já existe um curso cadastrado com o nome: " + obj.getNome());
+        }
+        
         obj = repository.save(obj);
         return new CursoDTO(obj);
     }
@@ -42,6 +47,12 @@ public class CursoService {
     public CursoDTO update(Long id, Curso obj) {
         try {
             Curso entity = repository.getReferenceById(id);
+            
+            // Validação extra: Se o nome mudou, verifica se o novo nome já está em uso por outro curso
+            if (!entity.getNome().equals(obj.getNome()) && repository.existsByNome(obj.getNome())) {
+                throw new RuntimeException("Não é possível atualizar: o nome '" + obj.getNome() + "' já está em uso.");
+            }
+
             updateData(entity, obj);
             entity = repository.save(entity);
             return new CursoDTO(entity);
@@ -50,6 +61,7 @@ public class CursoService {
         }
     }
 
+    @Transactional
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Id não encontrado: " + id);
@@ -59,6 +71,7 @@ public class CursoService {
 
     private void updateData(Curso entity, Curso obj) {
         entity.setNome(obj.getNome());
+        entity.setDescricao(obj.getDescricao());
         entity.setCargaHorariaMax(obj.getCargaHorariaMax());
     }
 }

@@ -12,6 +12,7 @@ import com.senac.pi.DTO.CursoDTO;
 import com.senac.pi.entities.Curso;
 import com.senac.pi.services.CursoService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/cursos")
 public class CursoResource {

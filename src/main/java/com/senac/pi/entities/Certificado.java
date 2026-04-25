@@ -5,7 +5,12 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_certificado")
@@ -17,11 +22,9 @@ public class Certificado implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nomeArquivo;
-    private String urlArquivo;
-    private Boolean processadoOcr;
+    private String nomeArquivo; // Nome original enviado pelo aluno
+    private String urlArquivo;  // Caminho ou link para acessar o arquivo
 
-    // 🔥 lado inverso do relacionamento
     @JsonIgnore
     @OneToOne(mappedBy = "certificado")
     private Submissao submissao;
@@ -29,47 +32,38 @@ public class Certificado implements Serializable {
     public Certificado() {
     }
 
-    public Certificado(Long id, String nomeArquivo, String urlArquivo, Boolean processadoOcr) {
+    public Certificado(Long id, String nomeArquivo, String urlArquivo) {
         this.id = id;
         this.nomeArquivo = nomeArquivo;
         this.urlArquivo = urlArquivo;
-        this.processadoOcr = processadoOcr;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getNomeArquivo() {
-        return nomeArquivo;
-    }
-
-    public String getUrlArquivo() {
-        return urlArquivo;
-    }
-
-    public Boolean getProcessadoOcr() {
-        return processadoOcr;
-    }
-
-    public Submissao getSubmissao() {
-        return submissao;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNomeArquivo() {
+        return nomeArquivo;
     }
 
     public void setNomeArquivo(String nomeArquivo) {
         this.nomeArquivo = nomeArquivo;
     }
 
+    public String getUrlArquivo() {
+        return urlArquivo;
+    }
+
     public void setUrlArquivo(String urlArquivo) {
         this.urlArquivo = urlArquivo;
     }
 
-    public void setProcessadoOcr(Boolean processadoOcr) {
-        this.processadoOcr = processadoOcr;
+    public Submissao getSubmissao() {
+        return submissao;
     }
 
     public void setSubmissao(Submissao submissao) {

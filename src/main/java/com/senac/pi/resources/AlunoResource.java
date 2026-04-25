@@ -45,7 +45,7 @@ public class AlunoResource {
 
     /**
      * Insere um novo aluno. 
-     * Retorna o status 201 (Created) e a localização do novo recurso.
+     * O Service define automaticamente o tipo como ALUNO.
      */
     @PostMapping
     public ResponseEntity<AlunoDTO> insert(@RequestBody AlunoDTO dto) {
@@ -56,7 +56,17 @@ public class AlunoResource {
     }
 
     /**
-     * Atualiza um aluno existente.
+     * Realiza a matrícula de um aluno em um curso.
+     * Aplica a regra de negócio de não permitir duplicidade.
+     */
+    @PostMapping(value = "/{alunoId}/cursos/{cursoId}")
+    public ResponseEntity<Void> matricularEmCurso(@PathVariable Long alunoId, @PathVariable Long cursoId) {
+        service.matricularEmCurso(alunoId, cursoId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Atualiza dados básicos de um aluno existente.
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<AlunoDTO> update(@PathVariable Long id, @RequestBody AlunoDTO dto) {
@@ -66,7 +76,6 @@ public class AlunoResource {
 
     /**
      * Deleta um aluno por ID.
-     * Retorna o status 204 (No Content).
      */
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
