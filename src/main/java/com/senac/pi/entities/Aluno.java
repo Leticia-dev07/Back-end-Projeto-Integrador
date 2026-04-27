@@ -6,7 +6,10 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senac.pi.entities.enums.UserRole;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -17,12 +20,20 @@ public class Aluno extends User {
 
     private static final long serialVersionUID = 1L;
 
+    @Column(unique = true, nullable = false)
     private String matricula;
+    
+    @Column(unique = true, nullable = false)
     private String turma;
+    
     private Integer horasAcumuladas = 0;
 
-    @JsonIgnore
-    @ManyToMany(mappedBy = "alunos")
+    @ManyToMany
+    @JoinTable(
+        name = "tb_curso_aluno",
+        joinColumns = @JoinColumn(name = "aluno_id"),
+        inverseJoinColumns = @JoinColumn(name = "curso_id")
+    )
     private Set<Curso> cursos = new HashSet<>();
     
     @JsonIgnore // Adicionado para evitar loop infinito no JSON

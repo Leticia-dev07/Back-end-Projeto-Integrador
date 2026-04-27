@@ -7,7 +7,8 @@ public record CategoriaDTO(
     String area,
     Boolean exigeComprovante,
     Integer horasPorCertificado,
-    Integer limiteSubmissoesSemestre
+    Integer limiteSubmissoesSemestre,
+    Long cursoId // Campo adicionado para o vínculo com o curso
 ) {
     public CategoriaDTO(Categoria entity) {
         this(
@@ -15,7 +16,9 @@ public record CategoriaDTO(
             entity.getArea(),
             entity.getExigeComprovante(),
             entity.getHorasPorCertificado(),
-            entity.getLimiteSubmissoesSemestre()
+            entity.getLimiteSubmissoesSemestre(),
+            // Captura o ID do curso da entidade para o DTO
+            entity.getCurso() != null ? entity.getCurso().getId() : null
         );
     }
 }

@@ -36,14 +36,9 @@ public class Curso implements Serializable {
     private Integer cargaHorariaMax;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-        name = "tb_curso_aluno",
-        joinColumns = @JoinColumn(name = "curso_id"),
-        inverseJoinColumns = @JoinColumn(name = "aluno_id")
-    )
+    @ManyToMany(mappedBy = "cursos")
     private Set<Aluno> alunos = new HashSet<>();
-
+    
     @ManyToMany
     @JoinTable(
         name = "tb_curso_coordenador",

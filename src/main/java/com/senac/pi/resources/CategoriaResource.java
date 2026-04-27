@@ -45,6 +45,19 @@ public class CategoriaResource {
                 .buildAndExpand(dto.id()).toUri();
         return ResponseEntity.created(uri).body(dto);
     }
+    
+    @PostMapping(value = "/curso/{cursoId}")
+    public ResponseEntity<CategoriaDTO> insertComCurso(
+            @PathVariable Long cursoId, 
+            @RequestBody Categoria obj) {
+        
+        // Chamamos um novo método no service que trata esse vínculo
+        CategoriaDTO dto = service.insertComCurso(cursoId, obj);
+        
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaDTO> update(@PathVariable Long id, @RequestBody Categoria obj) {

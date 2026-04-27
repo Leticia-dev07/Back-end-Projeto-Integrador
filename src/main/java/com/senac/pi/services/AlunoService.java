@@ -29,7 +29,7 @@ public class AlunoService {
     public List<AlunoDTO> findAll() {
         List<Aluno> list = repository.findAll();
         return list.stream()
-                   .map(AlunoDTO::new) // Usando o construtor que criamos no Record
+                   .map(AlunoDTO::new)
                    .collect(Collectors.toList());
     }
 
@@ -40,20 +40,51 @@ public class AlunoService {
         return new AlunoDTO(entity);
     }
 
+    /**
+     * NOVO: Busca alunos vinculados a um curso específico e converte para DTO.
+     */
+    @Transactional(readOnly = true)
+    public List<AlunoDTO> findByCurso(Long cursoId) {
+        List<Aluno> list = repository.findByCursoId(cursoId);
+        return list.stream()
+                   .map(AlunoDTO::new)
+                   .collect(Collectors.toList());
+    }
+
     @Transactional
     public AlunoDTO insert(AlunoDTO dto) {
+        validarDuplicidade(dto);
+
         Aluno entity = new Aluno();
         copyDtoToEntity(dto, entity);
         
-        // REGRA: Garantir estado inicial
         entity.setRole(UserRole.ALUNO);
         entity.setSenhaHash(dto.senha()); 
-        entity.setHorasAcumuladas(0); // Todo aluno começa com 0 horas
+        entity.setHorasAcumuladas(0);
         
         entity = repository.save(entity);
         return new AlunoDTO(entity);
     }
 
+    @Transactional
+    public AlunoDTO insertComCurso(Long cursoId, AlunoDTO dto) {
+        validarDuplicidade(dto);
+
+        Aluno entity = new Aluno();
+        copyDtoToEntity(dto, entity);
+        
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+        
+        entity.setRole(UserRole.ALUNO);
+        entity.setSenhaHash(dto.senha()); 
+        entity.setHorasAcumuladas(0);
+        
+        entity.addCurso(curso);
+        entity = repository.save(entity);
+        return new AlunoDTO(entity);
+    }
+    
     @Transactional
     public void matricularEmCurso(Long alunoId, Long cursoId) {
         Aluno aluno = repository.findById(alunoId)
@@ -65,7 +96,7 @@ public class AlunoService {
             throw new RuntimeException("O aluno já está matriculado neste curso!");
         }
 
-        aluno.getCursos().add(curso);
+        aluno.addCurso(curso);
         repository.save(aluno);
     }
 
@@ -73,8 +104,12 @@ public class AlunoService {
     public AlunoDTO update(Long id, AlunoDTO dto) {
         try {
             Aluno entity = repository.getReferenceById(id);
+            
+            if (!entity.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
+                throw new RuntimeException("O novo e-mail já está em uso.");
+            }
+
             copyDtoToEntity(dto, entity);
-            // Nota: Não atualizamos horasAcumuladas aqui para evitar fraude manual via Profile
             entity = repository.save(entity);
             return new AlunoDTO(entity);
         } catch (EntityNotFoundException e) {
@@ -89,12 +124,21 @@ public class AlunoService {
         repository.deleteById(id);
     }
 
+    private void validarDuplicidade(AlunoDTO dto) {
+        if (repository.existsByEmail(dto.email())) {
+            throw new RuntimeException("E-mail já cadastrado!");
+        }
+        if (repository.existsByMatricula(dto.matricula())) {
+            throw new RuntimeException("Matrícula já cadastrada!");
+        }
+    }
+
     private void copyDtoToEntity(AlunoDTO dto, Aluno entity) {
         entity.setName(dto.name());
         entity.setEmail(dto.email());
         entity.setMatricula(dto.matricula());
         entity.setTurma(dto.turma());
-        // Se o DTO trouxer horas e a entidade estiver nula (novo registro), inicializamos
+        
         if (entity.getHorasAcumuladas() == null) {
             entity.setHorasAcumuladas(0);
         }

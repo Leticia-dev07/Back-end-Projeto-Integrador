@@ -82,12 +82,12 @@ public class SubmissaoService {
         // 4. Salva o arquivo físico no disco
         String nomeArquivoNoDisco = fileService.saveFile(arquivo);
 
-        // 5. Instancia e configura o Certificado (entidade que deletamos o OCR)
+        // 5. Instancia e configura o Certificado 
         Certificado certificado = new Certificado();
         certificado.setNomeArquivo(arquivo.getOriginalFilename());
         certificado.setUrlArquivo(nomeArquivoNoDisco);
         
-        // 6. Vincula o certificado à submissão (Relacionamento 1:1)
+        // 6. Vincula o certificado à submissão 
         entity.setCertificado(certificado);
         certificado.setSubmissao(entity);
 

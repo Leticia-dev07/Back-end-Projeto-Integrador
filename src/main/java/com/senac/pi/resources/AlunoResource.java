@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,13 +21,14 @@ import com.senac.pi.services.AlunoService;
 
 @RestController
 @RequestMapping(value = "/alunos")
+@CrossOrigin(origins = "*")
 public class AlunoResource {
 
     @Autowired
     private AlunoService service;
 
     /**
-     * Retorna a lista de todos os alunos convertidos em DTO.
+     * Retorna a lista de todos os alunos cadastrados no sistema.
      */
     @GetMapping
     public ResponseEntity<List<AlunoDTO>> findAll() {
@@ -44,8 +46,17 @@ public class AlunoResource {
     }
 
     /**
-     * Insere um novo aluno. 
-     * O Service define automaticamente o tipo como ALUNO.
+     * NOVO: Retorna a lista de alunos vinculados a um curso específico.
+     * Utilizado para alimentar a tabela/lista na tela de Perfil do Curso.
+     */
+    @GetMapping(value = "/curso/{cursoId}")
+    public ResponseEntity<List<AlunoDTO>> findByCurso(@PathVariable Long cursoId) {
+        List<AlunoDTO> list = service.findByCurso(cursoId);
+        return ResponseEntity.ok().body(list);
+    }
+
+    /**
+     * Insere um novo aluno sem vínculo imediato a um curso.
      */
     @PostMapping
     public ResponseEntity<AlunoDTO> insert(@RequestBody AlunoDTO dto) {
@@ -56,8 +67,19 @@ public class AlunoResource {
     }
 
     /**
-     * Realiza a matrícula de um aluno em um curso.
-     * Aplica a regra de negócio de não permitir duplicidade.
+     * Insere um novo aluno e já o vincula a um curso específico.
+     * Endpoint usado pelo formulário de cadastro dentro do contexto de um curso.
+     */
+    @PostMapping(value = "/curso/{cursoId}")
+    public ResponseEntity<AlunoDTO> insertComCurso(@PathVariable Long cursoId, @RequestBody AlunoDTO dto) {
+        dto = service.insertComCurso(cursoId, dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(dto.id()).toUri();
+        return ResponseEntity.created(uri).body(dto);
+    }
+
+    /**
+     * Realiza a matrícula de um aluno já existente em um curso.
      */
     @PostMapping(value = "/{alunoId}/cursos/{cursoId}")
     public ResponseEntity<Void> matricularEmCurso(@PathVariable Long alunoId, @PathVariable Long cursoId) {
@@ -66,7 +88,7 @@ public class AlunoResource {
     }
 
     /**
-     * Atualiza dados básicos de um aluno existente.
+     * Atualiza dados de um aluno existente.
      */
     @PutMapping(value = "/{id}")
     public ResponseEntity<AlunoDTO> update(@PathVariable Long id, @RequestBody AlunoDTO dto) {
