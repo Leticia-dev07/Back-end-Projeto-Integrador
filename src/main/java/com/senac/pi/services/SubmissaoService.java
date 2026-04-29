@@ -26,6 +26,9 @@ import jakarta.persistence.EntityNotFoundException;
 public class SubmissaoService {
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private SubmissaoRepository repository;
 
     @Autowired
