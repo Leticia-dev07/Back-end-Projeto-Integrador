@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
 import org.springframework.security.crypto.password.PasswordEncoder;
-=======
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,19 +26,15 @@ public class AlunoService {
     @Autowired
     private CursoRepository cursoRepository;
 
-<<<<<<< HEAD
-    // Injetando o encoder definido na SecurityConfig
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-=======
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     @Transactional(readOnly = true)
     public List<AlunoDTO> findAll() {
         List<Aluno> list = repository.findAll();
         return list.stream()
-                   .map(AlunoDTO::new)
-                   .collect(Collectors.toList());
+                .map(AlunoDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -51,18 +44,12 @@ public class AlunoService {
         return new AlunoDTO(entity);
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * NOVO: Busca alunos vinculados a um curso específico e converte para DTO.
-     */
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     @Transactional(readOnly = true)
     public List<AlunoDTO> findByCurso(Long cursoId) {
         List<Aluno> list = repository.findByCursoId(cursoId);
         return list.stream()
-                   .map(AlunoDTO::new)
-                   .collect(Collectors.toList());
+                .map(AlunoDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -71,18 +58,11 @@ public class AlunoService {
 
         Aluno entity = new Aluno();
         copyDtoToEntity(dto, entity);
-        
+
         entity.setRole(UserRole.ALUNO);
-<<<<<<< HEAD
-        
-        // CRIPTOGRAFIA DA SENHA:
-        entity.setSenhaHash(passwordEncoder.encode(dto.senha())); 
-        
-=======
-        entity.setSenhaHash(dto.senha()); 
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
+        entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
         entity.setHorasAcumuladas(0);
-        
+
         entity = repository.save(entity);
         return new AlunoDTO(entity);
     }
@@ -93,30 +73,25 @@ public class AlunoService {
 
         Aluno entity = new Aluno();
         copyDtoToEntity(dto, entity);
-        
+
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
-        
+
         entity.setRole(UserRole.ALUNO);
-<<<<<<< HEAD
-        
-        // CRIPTOGRAFIA DA SENHA:
-        entity.setSenhaHash(passwordEncoder.encode(dto.senha())); 
-        
-=======
-        entity.setSenhaHash(dto.senha()); 
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
+        entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
         entity.setHorasAcumuladas(0);
-        
+
         entity.addCurso(curso);
         entity = repository.save(entity);
+
         return new AlunoDTO(entity);
     }
-    
+
     @Transactional
     public void matricularEmCurso(Long alunoId, Long cursoId) {
         Aluno aluno = repository.findById(alunoId)
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
@@ -132,23 +107,20 @@ public class AlunoService {
     public AlunoDTO update(Long id, AlunoDTO dto) {
         try {
             Aluno entity = repository.getReferenceById(id);
-            
+
             if (!entity.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
                 throw new RuntimeException("O novo e-mail já está em uso.");
             }
 
             copyDtoToEntity(dto, entity);
-<<<<<<< HEAD
-            
-            // Caso a senha tenha sido alterada no DTO, criptografamos novamente
+
             if (dto.senha() != null && !dto.senha().isBlank()) {
                 entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
             }
 
-=======
->>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
             entity = repository.save(entity);
             return new AlunoDTO(entity);
+
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Id não encontrado: " + id);
         }
@@ -165,6 +137,7 @@ public class AlunoService {
         if (repository.existsByEmail(dto.email())) {
             throw new RuntimeException("E-mail já cadastrado!");
         }
+
         if (repository.existsByMatricula(dto.matricula())) {
             throw new RuntimeException("Matrícula já cadastrada!");
         }
@@ -175,7 +148,7 @@ public class AlunoService {
         entity.setEmail(dto.email());
         entity.setMatricula(dto.matricula());
         entity.setTurma(dto.turma());
-        
+
         if (entity.getHorasAcumuladas() == null) {
             entity.setHorasAcumuladas(0);
         }
