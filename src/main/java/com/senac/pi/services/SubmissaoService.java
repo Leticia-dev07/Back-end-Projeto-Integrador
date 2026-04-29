@@ -128,6 +128,17 @@ public class SubmissaoService {
         
         alunoRepository.save(aluno);
         submissao = repository.save(submissao);
+
+    String emailAluno = aluno.getEmail(); // certifique-se que Aluno tem getEmail()
+    emailService.enviarEmail(
+        emailAluno,
+        "SGE Senac - Certificado Aprovado ✅",
+        "Olá, " + aluno.getNome() + "!\n\n" +
+        "Seu certificado referente à atividade foi APROVADO.\n" +
+        "Horas computadas: " + submissao.getHorasAproveitadas() + "h\n\n" +
+        "Acesse o sistema para ver seu progresso.\n\n" +
+        "SGE Senac"
+    );
         
         return new SubmissaoDTO(submissao);
     }
@@ -141,6 +152,18 @@ public class SubmissaoService {
         submissao.setObservacaoCoordenador(observacao);
         
         submissao = repository.save(submissao);
+
+    Aluno aluno = submissao.getAluno();
+    emailService.enviarEmail(
+        aluno.getEmail(),
+        "SGE Senac - Certificado Reprovado ❌",
+        "Olá, " + aluno.getNome() + "!\n\n" +
+        "Infelizmente seu certificado foi REPROVADO.\n\n" +
+        "Motivo: " + observacao + "\n\n" +
+        "Em caso de dúvidas, entre em contato com seu coordenador.\n\n" +
+        "SGE Senac"
+    );
+        
         return new SubmissaoDTO(submissao);
     }
 }
