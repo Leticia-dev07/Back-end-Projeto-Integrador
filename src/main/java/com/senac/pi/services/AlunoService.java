@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+<<<<<<< HEAD
 import org.springframework.security.crypto.password.PasswordEncoder;
+=======
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +29,13 @@ public class AlunoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+<<<<<<< HEAD
     // Injetando o encoder definido na SecurityConfig
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+=======
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     @Transactional(readOnly = true)
     public List<AlunoDTO> findAll() {
         List<Aluno> list = repository.findAll();
@@ -45,6 +51,12 @@ public class AlunoService {
         return new AlunoDTO(entity);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * NOVO: Busca alunos vinculados a um curso específico e converte para DTO.
+     */
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     @Transactional(readOnly = true)
     public List<AlunoDTO> findByCurso(Long cursoId) {
         List<Aluno> list = repository.findByCursoId(cursoId);
@@ -61,10 +73,14 @@ public class AlunoService {
         copyDtoToEntity(dto, entity);
         
         entity.setRole(UserRole.ALUNO);
+<<<<<<< HEAD
         
         // CRIPTOGRAFIA DA SENHA:
         entity.setSenhaHash(passwordEncoder.encode(dto.senha())); 
         
+=======
+        entity.setSenhaHash(dto.senha()); 
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
         entity.setHorasAcumuladas(0);
         
         entity = repository.save(entity);
@@ -82,10 +98,14 @@ public class AlunoService {
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
         
         entity.setRole(UserRole.ALUNO);
+<<<<<<< HEAD
         
         // CRIPTOGRAFIA DA SENHA:
         entity.setSenhaHash(passwordEncoder.encode(dto.senha())); 
         
+=======
+        entity.setSenhaHash(dto.senha()); 
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
         entity.setHorasAcumuladas(0);
         
         entity.addCurso(curso);
@@ -118,12 +138,15 @@ public class AlunoService {
             }
 
             copyDtoToEntity(dto, entity);
+<<<<<<< HEAD
             
             // Caso a senha tenha sido alterada no DTO, criptografamos novamente
             if (dto.senha() != null && !dto.senha().isBlank()) {
                 entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
             }
 
+=======
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
             entity = repository.save(entity);
             return new AlunoDTO(entity);
         } catch (EntityNotFoundException e) {

@@ -1,5 +1,6 @@
 package com.senac.pi.entities;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -9,6 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+=======
+import java.util.HashSet;
+import java.util.Set;
+
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senac.pi.entities.enums.UserRole;
 
@@ -22,14 +28,22 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_aluno")
+<<<<<<< HEAD
 public class Aluno extends User implements UserDetails {
+=======
+public class Aluno extends User {
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 
     private static final long serialVersionUID = 1L;
 
     @Column(unique = true, nullable = false)
     private String matricula;
     
+<<<<<<< HEAD
     @Column(nullable = false)
+=======
+    @Column(unique = true, nullable = false)
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     private String turma;
     
     private Integer horasAcumuladas = 0;
@@ -42,7 +56,11 @@ public class Aluno extends User implements UserDetails {
     )
     private Set<Curso> cursos = new HashSet<>();
     
+<<<<<<< HEAD
     @JsonIgnore 
+=======
+    @JsonIgnore // Adicionado para evitar loop infinito no JSON
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     @OneToMany(mappedBy = "aluno")
     private Set<Submissao> submissoes = new HashSet<>();
 
@@ -50,12 +68,17 @@ public class Aluno extends User implements UserDetails {
     }
 
     public Aluno(Long id, String name, String email, String senhaHash, String matricula, String turma, Integer horasAcumuladas) {
+<<<<<<< HEAD
+=======
+        // Passando o UserRole.ALUNO para a classe pai
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
         super(id, name, email, senhaHash, UserRole.ALUNO); 
         this.matricula = matricula;
         this.turma = turma;
         this.horasAcumuladas = (horasAcumuladas == null) ? 0 : horasAcumuladas;
     }
 
+<<<<<<< HEAD
     // --- MÉTODOS DA INTERFACE USERDETAILS (SPRING SECURITY) ---
 
     @Override
@@ -96,6 +119,9 @@ public class Aluno extends User implements UserDetails {
 
     // --- GETTERS E SETTERS ---
 
+=======
+    // Getters e Setters
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     public String getMatricula() {
         return matricula;
     }
@@ -128,6 +154,10 @@ public class Aluno extends User implements UserDetails {
         return submissoes;
     }
 
+<<<<<<< HEAD
+=======
+    // Métodos auxiliares
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     public void addCurso(Curso curso) {
         cursos.add(curso);
     }

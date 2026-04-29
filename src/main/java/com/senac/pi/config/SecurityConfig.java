@@ -1,5 +1,6 @@
 package com.senac.pi.config;
 
+<<<<<<< HEAD
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+=======
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+<<<<<<< HEAD
     @Autowired
     private SecurityFilter securityFilter;
 
@@ -73,5 +82,17 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+=======
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable()) // Desabilita CSRF para conseguir testar POST/PUT sem erro
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll() // Libera QUALQUER rota sem senha
+            )
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())); // Libera o console do H2 se estiver usando
+        
+        return http.build();
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     }
 }

@@ -1,6 +1,7 @@
 package com.senac.pi.entities;
 
 import java.io.Serializable;
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -9,21 +10,31 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+=======
+import java.util.Objects;
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
 import com.senac.pi.entities.enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_user")
 @Inheritance(strategy = InheritanceType.JOINED)
+<<<<<<< HEAD
 public abstract class User implements Serializable, UserDetails {
+=======
+public abstract class User implements Serializable {
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+<<<<<<< HEAD
     
     @Column(unique = true) // Garante que e-mails não se repitam no login
+=======
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     private String email;
 
     @Column(name = "senha_hash")
@@ -42,6 +53,7 @@ public abstract class User implements Serializable, UserDetails {
         this.role = role;
     }
 
+<<<<<<< HEAD
     // --- MÉTODOS DA INTERFACE USERDETAILS (OBRIGATÓRIOS PARA SEGURANÇA) ---
 
     @Override
@@ -74,6 +86,9 @@ public abstract class User implements Serializable, UserDetails {
 
     // --- GETTERS E SETTERS ---
 
+=======
+    // Getters e Setters
+>>>>>>> 605a1f1f0e30830dd253152ec3f1ec4a130018bc
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
