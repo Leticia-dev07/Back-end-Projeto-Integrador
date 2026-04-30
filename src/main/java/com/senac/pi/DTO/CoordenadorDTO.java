@@ -5,9 +5,10 @@ import com.senac.pi.entities.Coordenador;
 public record CoordenadorDTO(
     Long id,
     String name,
-    String email
+    String email,
+    String password // Adicionado para o cadastro
 ) {
     public CoordenadorDTO(Coordenador entity) {
-        this(entity.getId(), entity.getName(), entity.getEmail());
+        this(entity.getId(), entity.getName(), entity.getEmail(), null);
     }
 }

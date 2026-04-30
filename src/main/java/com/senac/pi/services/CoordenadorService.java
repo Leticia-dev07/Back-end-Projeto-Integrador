@@ -45,15 +45,21 @@ public class CoordenadorService {
     }
 
     @Transactional
-    public CoordenadorDTO insert(Coordenador obj) {
-        obj.setRole(UserRole.COORDENADOR);
+    public CoordenadorDTO insert(CoordenadorDTO dto) {
+        Coordenador entity = new Coordenador();
+        
+        // Copiando dados do DTO para a Entidade
+        entity.setName(dto.name());
+        entity.setEmail(dto.email());
+        entity.setRole(UserRole.COORDENADOR);
 
-        if (obj.getSenhaHash() != null && !obj.getSenhaHash().isBlank()) {
-            obj.setSenhaHash(passwordEncoder.encode(obj.getSenhaHash()));
+        // Criptografando a senha que vem do DTO
+        if (dto.password() != null && !dto.password().isBlank()) {
+            entity.setSenhaHash(passwordEncoder.encode(dto.password()));
         }
 
-        obj = repository.save(obj);
-        return new CoordenadorDTO(obj);
+        entity = repository.save(entity);
+        return new CoordenadorDTO(entity);
     }
 
     @Transactional
@@ -64,15 +70,25 @@ public class CoordenadorService {
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
+        // Adiciona o coordenador ao curso (Relação ManyToMany)
         curso.getCoordenadores().add(coord);
         cursoRepository.save(curso);
     }
 
     @Transactional
-    public CoordenadorDTO update(Long id, Coordenador obj) {
+    public CoordenadorDTO update(Long id, CoordenadorDTO dto) {
         try {
             Coordenador entity = repository.getReferenceById(id);
-            updateData(entity, obj);
+            
+            // Atualiza os dados básicos
+            entity.setName(dto.name());
+            entity.setEmail(dto.email());
+
+            // Se uma nova senha for enviada no update, ela é criptografada
+            if (dto.password() != null && !dto.password().isBlank()) {
+                entity.setSenhaHash(passwordEncoder.encode(dto.password()));
+            }
+
             entity = repository.save(entity);
             return new CoordenadorDTO(entity);
 
@@ -86,16 +102,6 @@ public class CoordenadorService {
         if (!repository.existsById(id)) {
             throw new EntityNotFoundException("Id não encontrado: " + id);
         }
-
         repository.deleteById(id);
-    }
-
-    private void updateData(Coordenador entity, Coordenador obj) {
-        entity.setName(obj.getName());
-        entity.setEmail(obj.getEmail());
-
-        if (obj.getSenhaHash() != null && !obj.getSenhaHash().isBlank()) {
-            entity.setSenhaHash(passwordEncoder.encode(obj.getSenhaHash()));
-        }
     }
 }

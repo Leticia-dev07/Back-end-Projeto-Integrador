@@ -133,7 +133,7 @@ public class SubmissaoService {
     emailService.enviarEmail(
         emailAluno,
         "SGE Senac - Certificado Aprovado ✅",
-        "Olá, " + aluno.getNome() + "!\n\n" +
+        "Olá, " + aluno.getName() + "!\n\n" +
         "Seu certificado referente à atividade foi APROVADO.\n" +
         "Horas computadas: " + submissao.getHorasAproveitadas() + "h\n\n" +
         "Acesse o sistema para ver seu progresso.\n\n" +
@@ -157,7 +157,7 @@ public class SubmissaoService {
     emailService.enviarEmail(
         aluno.getEmail(),
         "SGE Senac - Certificado Reprovado ❌",
-        "Olá, " + aluno.getNome() + "!\n\n" +
+        "Olá, " + aluno.getName() + "!\n\n" +
         "Infelizmente seu certificado foi REPROVADO.\n\n" +
         "Motivo: " + observacao + "\n\n" +
         "Em caso de dúvidas, entre em contato com seu coordenador.\n\n" +

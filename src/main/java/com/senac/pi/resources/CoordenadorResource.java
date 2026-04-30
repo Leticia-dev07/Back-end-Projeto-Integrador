@@ -5,11 +5,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.senac.pi.DTO.CoordenadorDTO;
-import com.senac.pi.entities.Coordenador;
 import com.senac.pi.services.CoordenadorService;
 
 @RestController
@@ -32,12 +38,13 @@ public class CoordenadorResource {
     }
 
     @PostMapping
-    public ResponseEntity<CoordenadorDTO> insert(@RequestBody Coordenador obj) {
-        CoordenadorDTO dto = service.insert(obj);
+    public ResponseEntity<CoordenadorDTO> insert(@RequestBody CoordenadorDTO dto) { // Mude de Coordenador para CoordenadorDTO
+        CoordenadorDTO newDto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(dto.id()).toUri(); // No Record, acessamos .id() em vez de .getId()
-        return ResponseEntity.created(uri).body(dto);
+                .buildAndExpand(newDto.id()).toUri(); 
+        return ResponseEntity.created(uri).body(newDto);
     }
+    
     
     @PostMapping(value = "/{coordId}/cursos/{cursoId}")
     public ResponseEntity<Void> vincularCurso(@PathVariable Long coordId, @PathVariable Long cursoId) {
@@ -46,9 +53,9 @@ public class CoordenadorResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CoordenadorDTO> update(@PathVariable Long id, @RequestBody Coordenador obj) {
-        CoordenadorDTO dto = service.update(id, obj);
-        return ResponseEntity.ok().body(dto);
+    public ResponseEntity<CoordenadorDTO> update(@PathVariable Long id, @RequestBody CoordenadorDTO dto) { // Mude de Coordenador para CoordenadorDTO
+        CoordenadorDTO updatedDto = service.update(id, dto);
+        return ResponseEntity.ok().body(updatedDto);
     }
 
     @DeleteMapping("/{id}")

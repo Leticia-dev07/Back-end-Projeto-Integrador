@@ -39,7 +39,7 @@ public class Curso implements Serializable {
     @ManyToMany(mappedBy = "cursos")
     private Set<Aluno> alunos = new HashSet<>();
     
-    @ManyToMany
+    @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinTable(
         name = "tb_curso_coordenador",
         joinColumns = @JoinColumn(name = "curso_id"),
