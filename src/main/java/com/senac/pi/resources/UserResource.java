@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.senac.pi.DTO.UserDTO;
 import com.senac.pi.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/users")
+@Slf4j
 public class UserResource {
 	
     @Autowired

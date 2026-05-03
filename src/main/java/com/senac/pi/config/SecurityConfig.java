@@ -41,6 +41,8 @@ public class SecurityConfig {
                 // Liberação do Swagger UI
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 
+                .requestMatchers("/actuator/**").permitAll()
+                
                 // Permissões para Alunos
                 .requestMatchers(HttpMethod.GET, "/alunos/**").hasAnyRole("ADMIN", "COORDENADOR")
                 .requestMatchers(HttpMethod.POST, "/alunos/**").hasAnyRole("ADMIN", "COORDENADOR")

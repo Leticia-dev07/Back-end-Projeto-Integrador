@@ -19,9 +19,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.senac.pi.DTO.CoordenadorDTO;
 import com.senac.pi.services.CoordenadorService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/coordenadores")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class CoordenadorResource {
 
     @Autowired

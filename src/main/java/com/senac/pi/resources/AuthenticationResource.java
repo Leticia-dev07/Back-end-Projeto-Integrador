@@ -14,9 +14,12 @@ import com.senac.pi.DTO.LoginResponseDTO;
 import com.senac.pi.entities.User;
 import com.senac.pi.services.TokenService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("auth")
 @CrossOrigin(origins = "http://127.0.0.1:5500") // Permite a conexão do seu Live Server
+@Slf4j
 public class AuthenticationResource {
 
     @Autowired

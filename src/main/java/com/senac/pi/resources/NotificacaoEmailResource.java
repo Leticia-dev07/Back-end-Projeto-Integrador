@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.senac.pi.entities.NotificacaoEmail;
 import com.senac.pi.repositories.NotificacaoEmailRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/notificacaoEmail")
+@Slf4j
 public class NotificacaoEmailResource {
 	
 	@Autowired

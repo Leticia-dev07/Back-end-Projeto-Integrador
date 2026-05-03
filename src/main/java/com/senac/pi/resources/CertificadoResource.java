@@ -1,6 +1,7 @@
 package com.senac.pi.resources;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.senac.pi.DTO.CertificadoDTO;
 import com.senac.pi.services.CertificadoService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/certificados")
+@Slf4j
 public class CertificadoResource {
 
     @Autowired

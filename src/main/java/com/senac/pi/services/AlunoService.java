@@ -3,6 +3,8 @@ package com.senac.pi.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class AlunoService {
 
+    // Declaração manual do log (Resolve o erro "log cannot be resolved")
+    private static final Logger log = LoggerFactory.getLogger(AlunoService.class);
+
     @Autowired
     private AlunoRepository repository;
 
@@ -31,7 +36,9 @@ public class AlunoService {
 
     @Transactional(readOnly = true)
     public List<AlunoDTO> findAll() {
+        log.info("Buscando todos os alunos cadastrados...");
         List<Aluno> list = repository.findAll();
+        log.info("{} alunos encontrados.", list.size());
         return list.stream()
                 .map(AlunoDTO::new)
                 .collect(Collectors.toList());
@@ -39,13 +46,18 @@ public class AlunoService {
 
     @Transactional(readOnly = true)
     public AlunoDTO findById(Long id) {
+        log.info("Buscando aluno com ID: {}", id);
         Aluno entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Aluno com ID {} não encontrado no banco.", id);
+                    return new EntityNotFoundException("Aluno não encontrado");
+                });
         return new AlunoDTO(entity);
     }
 
     @Transactional(readOnly = true)
     public List<AlunoDTO> findByCurso(Long cursoId) {
+        log.info("Listando alunos matriculados no curso ID: {}", cursoId);
         List<Aluno> list = repository.findByCursoId(cursoId);
         return list.stream()
                 .map(AlunoDTO::new)
@@ -54,28 +66,39 @@ public class AlunoService {
 
     @Transactional
     public AlunoDTO insert(AlunoDTO dto) {
-        validarDuplicidade(dto);
+        log.info("Iniciando cadastro de novo aluno: {}", dto.name());
+        try {
+            validarDuplicidade(dto);
 
-        Aluno entity = new Aluno();
-        copyDtoToEntity(dto, entity);
+            Aluno entity = new Aluno();
+            copyDtoToEntity(dto, entity);
 
-        entity.setRole(UserRole.ALUNO);
-        entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
-        entity.setHorasAcumuladas(0);
+            entity.setRole(UserRole.ALUNO);
+            entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
+            entity.setHorasAcumuladas(0);
 
-        entity = repository.save(entity);
-        return new AlunoDTO(entity);
+            entity = repository.save(entity);
+            log.info("Aluno {} cadastrado com sucesso! ID: {}", entity.getName(), entity.getId());
+            return new AlunoDTO(entity);
+        } catch (Exception e) {
+            log.error("Erro ao inserir aluno: {}", e.getMessage());
+            throw e;
+        }
     }
 
     @Transactional
     public AlunoDTO insertComCurso(Long cursoId, AlunoDTO dto) {
+        log.info("Cadastrando aluno {} vinculado ao curso ID: {}", dto.name(), cursoId);
         validarDuplicidade(dto);
 
         Aluno entity = new Aluno();
         copyDtoToEntity(dto, entity);
 
         Curso curso = cursoRepository.findById(cursoId)
-                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+                .orElseThrow(() -> {
+                    log.error("Falha ao vincular: Curso ID {} não existe.", cursoId);
+                    return new EntityNotFoundException("Curso não encontrado");
+                });
 
         entity.setRole(UserRole.ALUNO);
         entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
@@ -84,11 +107,15 @@ public class AlunoService {
         entity.addCurso(curso);
         entity = repository.save(entity);
 
+        // Ajustado de getName() para getNome() para evitar erro de compilação
+        log.info("Aluno {} cadastrado e matriculado no curso!", entity.getName());
         return new AlunoDTO(entity);
     }
 
     @Transactional
     public void matricularEmCurso(Long alunoId, Long cursoId) {
+        log.info("Tentativa de matrícula: Aluno ID {} no Curso ID {}", alunoId, cursoId);
+        
         Aluno aluno = repository.findById(alunoId)
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
@@ -96,19 +123,23 @@ public class AlunoService {
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
         if (repository.existsByAlunoIdAndCursoId(alunoId, cursoId)) {
+            log.warn("Matrícula negada: Aluno ID {} já está no curso {}.", alunoId, cursoId);
             throw new RuntimeException("O aluno já está matriculado neste curso!");
         }
 
         aluno.addCurso(curso);
         repository.save(aluno);
+        log.info("Matrícula realizada com sucesso!");
     }
 
     @Transactional
     public AlunoDTO update(Long id, AlunoDTO dto) {
+        log.info("Atualizando dados do aluno ID: {}", id);
         try {
             Aluno entity = repository.getReferenceById(id);
 
             if (!entity.getEmail().equals(dto.email()) && repository.existsByEmail(dto.email())) {
+                log.warn("Falha na atualização: E-mail {} já está em uso.", dto.email());
                 throw new RuntimeException("O novo e-mail já está em uso.");
             }
 
@@ -119,43 +150,48 @@ public class AlunoService {
             }
 
             entity = repository.save(entity);
+            log.info("Dados do aluno {} atualizados com sucesso.", entity.getName());
             return new AlunoDTO(entity);
 
         } catch (EntityNotFoundException e) {
+            log.error("Erro ao atualizar: ID {} inexistente.", id);
             throw new EntityNotFoundException("Id não encontrado: " + id);
         }
     }
 
     public void delete(Long id) {
+        log.info("Tentando excluir aluno ID: {}", id);
         if (!repository.existsById(id)) {
+            log.error("Exclusão abortada: Aluno ID {} não encontrado.", id);
             throw new EntityNotFoundException("Id não encontrado");
         }
         repository.deleteById(id);
+        log.info("Aluno ID {} excluído com sucesso.", id);
     }
     
     @Transactional
     public void desvincularDeCurso(Long alunoId, Long cursoId) {
-        // Busca o aluno ou lança exceção
+        log.info("Desvinculando Aluno ID {} do Curso ID {}", alunoId, cursoId);
+        
         Aluno aluno = repository.findById(alunoId)
                 .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
 
-        // Busca o curso ou lança exceção
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
-        // Remove o curso da coleção do aluno (o método removeCurso deve estar na sua entidade Aluno)
         aluno.getCursos().remove(curso);
-        
-        // Salva a alteração
         repository.save(aluno);
+        log.info("Vínculo removido com sucesso.");
     }
 
     private void validarDuplicidade(AlunoDTO dto) {
         if (repository.existsByEmail(dto.email())) {
+            log.warn("Validação falhou: E-mail {} já existe.", dto.email());
             throw new RuntimeException("E-mail já cadastrado!");
         }
 
         if (repository.existsByMatricula(dto.matricula())) {
+            log.warn("Validação falhou: Matrícula {} já existe.", dto.matricula());
             throw new RuntimeException("Matrícula já cadastrada!");
         }
     }

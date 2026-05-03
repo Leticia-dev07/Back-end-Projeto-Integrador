@@ -1,0 +1,107 @@
+2026-05-03T10:51:02.311-03:00  INFO 19572 --- [pi] [main] com.senac.pi.PiApplication               : Starting PiApplication using Java 25.0.1 with PID 19572 (C:\Users\pasco\Documents\2026.1\coding.mobile\Back-end-Projeto-Integrador-main\target\classes started by xxxxxx in C:\Users\pasco\Documents\2026.1\coding.mobile\Back-end-Projeto-Integrador-main)
+2026-05-03T10:51:02.320-03:00 DEBUG 19572 --- [pi] [main] com.senac.pi.PiApplication               : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-03T10:51:02.322-03:00  INFO 19572 --- [pi] [main] com.senac.pi.PiApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-05-03T10:51:09.827-03:00  INFO 19572 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-03T10:51:10.151-03:00  INFO 19572 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 281 ms. Found 9 JPA repository interfaces.
+2026-05-03T10:51:12.452-03:00  INFO 19572 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-03T10:51:12.493-03:00  INFO 19572 --- [pi] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-03T10:51:12.494-03:00  INFO 19572 --- [pi] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-03T10:51:12.677-03:00  INFO 19572 --- [pi] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 10199 ms
+2026-05-03T10:51:13.375-03:00  INFO 19572 --- [pi] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-03T10:51:13.589-03:00  INFO 19572 --- [pi] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-03T10:51:14.801-03:00  INFO 19572 --- [pi] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-03T10:51:14.875-03:00  INFO 19572 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-03T10:51:16.126-03:00  INFO 19572 --- [pi] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@7683d632
+2026-05-03T10:51:16.131-03:00  INFO 19572 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-03T10:51:16.330-03:00  WARN 19572 --- [pi] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-03T10:51:16.457-03:00  INFO 19572 --- [pi] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/pi]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: pi/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-03T10:51:19.002-03:00  INFO 19572 --- [pi] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-03T10:51:19.346-03:00  INFO 19572 --- [pi] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-03T10:51:19.477-03:00  INFO 19572 --- [pi] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-03T10:51:19.983-03:00 DEBUG 19572 --- [pi] [main] com.senac.pi.config.SecurityFilter       : Filter 'securityFilter' configured for use
+2026-05-03T10:51:21.455-03:00  INFO 19572 --- [pi] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authService
+2026-05-03T10:51:22.453-03:00  WARN 19572 --- [pi] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-03T10:51:23.096-03:00  INFO 19572 --- [pi] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-05-03T10:51:24.393-03:00  INFO 19572 --- [pi] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-05-03T10:51:25.188-03:00  INFO 19572 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-03T10:51:25.209-03:00  INFO 19572 --- [pi] [main] com.senac.pi.PiApplication               : Started PiApplication in 27.35 seconds (process running for 33.25)
+2026-05-03T10:51:26.488-03:00  INFO 19572 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-03T10:51:26.489-03:00  INFO 19572 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-03T10:51:26.495-03:00  INFO 19572 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2026-05-03T11:44:19.783-03:00  INFO 19572 --- [pi] [RMI TCP Connection(75)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2026-05-03T11:44:20.488-03:00  INFO 19572 --- [pi] [RMI TCP Connection(75)-127.0.0.1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-03T11:44:20.674-03:00  INFO 19572 --- [pi] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-03T11:44:21.026-03:00  INFO 19572 --- [pi] [RMI TCP Connection(75)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-03T11:44:21.264-03:00  INFO 19572 --- [pi] [RMI TCP Connection(75)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-03T11:44:21.316-03:00  INFO 19572 --- [pi] [RMI TCP Connection(75)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-03T12:04:13.947-03:00  INFO 27516 --- [pi] [main] com.senac.pi.PiApplication               : Starting PiApplication using Java 25.0.1 with PID 27516 (C:\Users\pasco\Documents\2026.1\coding.mobile\Back-end-Projeto-Integrador-main\target\classes started by xxxxxx in C:\Users\pasco\Documents\2026.1\coding.mobile\Back-end-Projeto-Integrador-main)
+2026-05-03T12:04:13.953-03:00 DEBUG 27516 --- [pi] [main] com.senac.pi.PiApplication               : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-03T12:04:13.955-03:00  INFO 27516 --- [pi] [main] com.senac.pi.PiApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-05-03T12:04:16.817-03:00  INFO 27516 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-03T12:04:17.019-03:00  INFO 27516 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 179 ms. Found 9 JPA repository interfaces.
+2026-05-03T12:04:18.491-03:00  INFO 27516 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-03T12:04:18.538-03:00  INFO 27516 --- [pi] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-03T12:04:18.539-03:00  INFO 27516 --- [pi] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-03T12:04:18.704-03:00  INFO 27516 --- [pi] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 4582 ms
+2026-05-03T12:04:19.225-03:00  INFO 27516 --- [pi] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-03T12:04:19.388-03:00  INFO 27516 --- [pi] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-03T12:04:20.585-03:00  INFO 27516 --- [pi] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-03T12:04:20.688-03:00  INFO 27516 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-03T12:04:21.773-03:00  INFO 27516 --- [pi] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1f24e33d
+2026-05-03T12:04:21.779-03:00  INFO 27516 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-03T12:04:22.005-03:00  WARN 27516 --- [pi] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-03T12:04:22.067-03:00  INFO 27516 --- [pi] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/pi]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: pi/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-03T12:04:25.660-03:00  INFO 27516 --- [pi] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-03T12:04:26.104-03:00  INFO 27516 --- [pi] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-03T12:04:26.310-03:00  INFO 27516 --- [pi] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-03T12:04:27.103-03:00 DEBUG 27516 --- [pi] [main] com.senac.pi.config.SecurityFilter       : Filter 'securityFilter' configured for use
+2026-05-03T12:04:29.972-03:00  INFO 27516 --- [pi] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authService
+2026-05-03T12:04:30.489-03:00  WARN 27516 --- [pi] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-03T12:04:31.029-03:00  INFO 27516 --- [pi] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-05-03T12:04:32.164-03:00  INFO 27516 --- [pi] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-05-03T12:04:32.376-03:00  INFO 27516 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-03T12:04:32.401-03:00  INFO 27516 --- [pi] [main] com.senac.pi.PiApplication               : Started PiApplication in 19.604 seconds (process running for 23.476)
+2026-05-03T12:04:33.433-03:00  INFO 27516 --- [pi] [RMI TCP Connection(9)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-03T12:04:33.434-03:00  INFO 27516 --- [pi] [RMI TCP Connection(9)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-03T12:04:33.439-03:00  INFO 27516 --- [pi] [RMI TCP Connection(9)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2026-05-03T12:05:08.481-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.AuthService        : ### AUTH ### Tentativa de autenticação para o e-mail: admin@senac.com
+2026-05-03T12:05:08.836-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.AuthService        : ### AUTH ### Usuário encontrado no banco! Prosseguindo com a validação de senha...
+2026-05-03T12:05:09.018-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Gerando token para o usuário: admin@senac.com
+2026-05-03T12:05:09.105-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token gerado com sucesso para a role: ADMIN
+2026-05-03T12:05:12.635-03:00 DEBUG 27516 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-03T12:05:12.635-03:00 DEBUG 27516 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-03T12:05:12.635-03:00 DEBUG 27516 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-03T12:05:12.739-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-03T12:05:12.749-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-7] c.senac.pi.services.CoordenadorService   : ### COORD ### Listando todos os coordenadores...
+2026-05-03T12:05:12.752-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.AlunoService       : Buscando todos os alunos cadastrados...
+2026-05-03T12:05:12.813-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.AlunoService       : 1 alunos encontrados.
+2026-05-03T12:05:12.814-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-7] c.senac.pi.services.CoordenadorService   : ### COORD ### 2 coordenadores encontrados.
+2026-05-03T12:05:12.876-03:00  INFO 27516 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 8
+2026-05-03T12:06:27.083-03:00  INFO 27516 --- [pi] [RMI TCP Connection(11)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2026-05-03T12:06:28.045-03:00  INFO 27516 --- [pi] [RMI TCP Connection(11)-127.0.0.1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-03T12:06:28.201-03:00  INFO 27516 --- [pi] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-03T12:06:28.437-03:00  INFO 27516 --- [pi] [RMI TCP Connection(11)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-03T12:06:28.597-03:00  INFO 27516 --- [pi] [RMI TCP Connection(11)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-03T12:06:28.779-03:00  INFO 27516 --- [pi] [RMI TCP Connection(11)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

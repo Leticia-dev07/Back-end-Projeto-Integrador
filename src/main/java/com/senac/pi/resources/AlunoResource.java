@@ -19,9 +19,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.senac.pi.DTO.AlunoDTO;
 import com.senac.pi.services.AlunoService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/alunos")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class AlunoResource {
 
     @Autowired

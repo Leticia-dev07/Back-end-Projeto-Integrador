@@ -20,9 +20,12 @@ import com.senac.pi.DTO.CategoriaDTO;
 import com.senac.pi.entities.Categoria;
 import com.senac.pi.services.CategoriaService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = "/categorias")
 @CrossOrigin(origins = "*")
+@Slf4j
 public class CategoriaResource {
 
     @Autowired
