@@ -47,13 +47,10 @@ public class CoordenadorService {
     @Transactional
     public CoordenadorDTO insert(CoordenadorDTO dto) {
         Coordenador entity = new Coordenador();
-        
-        // Copiando dados do DTO para a Entidade
         entity.setName(dto.name());
         entity.setEmail(dto.email());
         entity.setRole(UserRole.COORDENADOR);
 
-        // Criptografando a senha que vem do DTO
         if (dto.password() != null && !dto.password().isBlank()) {
             entity.setSenhaHash(passwordEncoder.encode(dto.password()));
         }
@@ -70,8 +67,29 @@ public class CoordenadorService {
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
-        // Adiciona o coordenador ao curso (Relação ManyToMany)
+        // Adiciona a relação em ambos os lados para manter o estado do objeto sincronizado
         curso.getCoordenadores().add(coord);
+        coord.getCursos().add(curso);
+
+        cursoRepository.save(curso);
+    }
+
+    /**
+     * Remove o vínculo entre um coordenador e um curso na tabela intermediária.
+     */
+    @Transactional
+    public void desvincularCurso(Long coordId, Long cursoId) {
+        Coordenador coord = repository.findById(coordId)
+                .orElseThrow(() -> new EntityNotFoundException("Coordenador não encontrado"));
+
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+
+        // Remove a relação de ambos os lados
+        curso.getCoordenadores().remove(coord);
+        coord.getCursos().remove(curso);
+
+        // Salva a alteração (o JPA se encarrega de deletar a linha na tabela de junção)
         cursoRepository.save(curso);
     }
 
@@ -79,19 +97,15 @@ public class CoordenadorService {
     public CoordenadorDTO update(Long id, CoordenadorDTO dto) {
         try {
             Coordenador entity = repository.getReferenceById(id);
-            
-            // Atualiza os dados básicos
             entity.setName(dto.name());
             entity.setEmail(dto.email());
 
-            // Se uma nova senha for enviada no update, ela é criptografada
             if (dto.password() != null && !dto.password().isBlank()) {
                 entity.setSenhaHash(passwordEncoder.encode(dto.password()));
             }
 
             entity = repository.save(entity);
             return new CoordenadorDTO(entity);
-
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Id não encontrado: " + id);
         }

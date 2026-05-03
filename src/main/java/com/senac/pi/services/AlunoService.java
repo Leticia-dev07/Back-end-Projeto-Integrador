@@ -132,6 +132,23 @@ public class AlunoService {
         }
         repository.deleteById(id);
     }
+    
+    @Transactional
+    public void desvincularDeCurso(Long alunoId, Long cursoId) {
+        // Busca o aluno ou lança exceção
+        Aluno aluno = repository.findById(alunoId)
+                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+
+        // Busca o curso ou lança exceção
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+
+        // Remove o curso da coleção do aluno (o método removeCurso deve estar na sua entidade Aluno)
+        aluno.getCursos().remove(curso);
+        
+        // Salva a alteração
+        repository.save(aluno);
+    }
 
     private void validarDuplicidade(AlunoDTO dto) {
         if (repository.existsByEmail(dto.email())) {

@@ -1,8 +1,7 @@
 package com.senac.pi.DTO;
 
-import com.senac.pi.entities.Curso;
 import com.senac.pi.entities.Coordenador;
-import java.util.Set;
+import com.senac.pi.entities.Curso;
 
 public record CursoDTO(
     Long id,

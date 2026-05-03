@@ -104,4 +104,14 @@ public class AlunoResource {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+    
+    /**
+     * Remove o vínculo de um aluno com um curso específico.
+     * Endpoint: DELETE /alunos/{alunoId}/cursos/{cursoId}
+     */
+    @DeleteMapping(value = "/{alunoId}/cursos/{cursoId}")
+    public ResponseEntity<Void> desvincularDeCurso(@PathVariable Long alunoId, @PathVariable Long cursoId) {
+        service.desvincularDeCurso(alunoId, cursoId);
+        return ResponseEntity.noContent().build();
+    }
 }
