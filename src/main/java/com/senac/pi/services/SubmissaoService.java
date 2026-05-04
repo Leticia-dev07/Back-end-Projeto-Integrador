@@ -1,5 +1,6 @@
 package com.senac.pi.services;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -41,9 +42,6 @@ public class SubmissaoService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    @Autowired
-    private FileService fileService;
-
     @Transactional(readOnly = true)
     public List<SubmissaoDTO> findAll() {
         log.info("### SUBMISSÃO ### Listando todas as submissões.");
@@ -63,54 +61,68 @@ public class SubmissaoService {
 
     @Transactional
     public SubmissaoDTO insert(Submissao entity, MultipartFile arquivo) {
-        log.info("### SUBMISSÃO ### Iniciando novo processo de submissão...");
+        log.info("### SUBMISSÃO ### Iniciando novo processo de submissão no Banco de Dados...");
 
         if (arquivo == null || arquivo.isEmpty()) {
             log.warn("### SUBMISSÃO ### Abortado: Arquivo ausente.");
             throw new RuntimeException("O envio do arquivo de certificado é obrigatório.");
         }
 
-        Aluno aluno = alunoRepository.findById(entity.getAluno().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-        
-        Categoria categoria = categoriaRepository.findById(entity.getCategoria().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+        try {
+            Aluno aluno = alunoRepository.findById(entity.getAluno().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
+            
+            Categoria categoria = categoriaRepository.findById(entity.getCategoria().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
-        log.info("### SUBMISSÃO ### Aluno: {} | Categoria: {}", aluno.getName(), categoria.getArea());
+            log.info("### SUBMISSÃO ### Aluno: {} | Categoria: {}", aluno.getName(), categoria.getArea());
 
-        // Validação de Regra de Negócio (Limite por Semestre)
-        Instant dataInicioSemestre = Instant.now().minus(180, ChronoUnit.DAYS);
-        long totalEnviado = repository.countByAlunoAndCategoriaInPeriod(
-                aluno.getId(), 
-                categoria.getId(), 
-                dataInicioSemestre
-        );
+            // Validação de Regra de Negócio (Limite por Semestre)
+            Instant dataInicioSemestre = Instant.now().minus(180, ChronoUnit.DAYS);
+            long totalEnviado = repository.countByAlunoAndCategoriaInPeriod(
+                    aluno.getId(), 
+                    categoria.getId(), 
+                    dataInicioSemestre
+            );
 
-        if (totalEnviado >= categoria.getLimiteSubmissoesSemestre()) {
-            log.warn("### SUBMISSÃO ### Bloqueado: Aluno atingiu o limite da categoria '{}'.", categoria.getArea());
-            throw new RuntimeException("Limite de envios atingido para a categoria: " + categoria.getArea());
+            if (totalEnviado >= categoria.getLimiteSubmissoesSemestre()) {
+                log.warn("### SUBMISSÃO ### Bloqueado: Aluno atingiu o limite da categoria '{}'.", categoria.getArea());
+                throw new RuntimeException("Limite de envios atingido para a categoria: " + categoria.getArea());
+            }
+
+            // LÓGICA DO CERTIFICADO (BYTES NO BANCO)
+            Certificado certificado = new Certificado();
+            certificado.setNomeArquivo(arquivo.getOriginalFilename());
+            certificado.setTipoArquivo(arquivo.getContentType());
+            certificado.setDadosArquivo(arquivo.getBytes()); // Salva os bytes reais aqui
+            
+            entity.setCertificado(certificado);
+            certificado.setSubmissao(entity);
+
+            // FINALIZAÇÃO
+            entity.setAluno(aluno);
+            entity.setCategoria(categoria);
+            entity.setDataEnvio(Instant.now());
+            entity.setStatus(StatusSubmissao.PENDENTE);
+            entity.setHorasAproveitadas(categoria.getHorasPorCertificado());
+
+            // Primeiro save para gerar IDs
+            entity = repository.save(entity);
+
+            // Gera a URL dinâmica para o download/visualização apontando para o seu próprio backend
+            String urlDownload = "http://localhost:8080/certificados/" + entity.getCertificado().getId() + "/download";
+            entity.getCertificado().setUrlArquivo(urlDownload);
+            
+            // Segundo save para atualizar a URL do certificado
+            entity = repository.save(entity);
+
+            log.info("### SUBMISSÃO ### Sucesso! Arquivo salvo no MySQL. Submissão ID {}.", entity.getId());
+            return new SubmissaoDTO(entity);
+
+        } catch (IOException e) {
+            log.error("### SUBMISSÃO ### Erro ao processar bytes do arquivo: {}", e.getMessage());
+            throw new RuntimeException("Falha ao ler o arquivo enviado.");
         }
-
-        // LÓGICA DO CERTIFICADO
-        String nomeArquivoNoDisco = fileService.saveFile(arquivo);
-
-        Certificado certificado = new Certificado();
-        certificado.setNomeArquivo(arquivo.getOriginalFilename());
-        certificado.setUrlArquivo(nomeArquivoNoDisco);
-        
-        entity.setCertificado(certificado);
-        certificado.setSubmissao(entity);
-
-        // FINALIZAÇÃO
-        entity.setAluno(aluno);
-        entity.setCategoria(categoria);
-        entity.setDataEnvio(Instant.now());
-        entity.setStatus(StatusSubmissao.PENDENTE);
-        entity.setHorasAproveitadas(categoria.getHorasPorCertificado());
-
-        entity = repository.save(entity);
-        log.info("### SUBMISSÃO ### Sucesso! Submissão ID {} criada e aguardando aprovação.", entity.getId());
-        return new SubmissaoDTO(entity);
     }
 
     @Transactional
@@ -120,7 +132,7 @@ public class SubmissaoService {
                 .orElseThrow(() -> new EntityNotFoundException("Submissão não encontrada"));
 
         if (submissao.getStatus() != StatusSubmissao.PENDENTE) {
-            log.warn("### FLUXO ### Tentativa de aprovar submissão já processada (Status: {}).", submissao.getStatus());
+            log.warn("### FLUXO ### Tentativa de aprovar submissão já processada.");
             throw new RuntimeException("Esta submissão já foi processada.");
         }
 
@@ -131,20 +143,19 @@ public class SubmissaoService {
         int novasHoras = submissao.getHorasAproveitadas();
         
         aluno.setHorasAcumuladas(horasAnteriores + novasHoras);
-        log.info("### FLUXO ### Horas do Aluno {}: {}h -> {}h", aluno.getName(), horasAnteriores, aluno.getHorasAcumuladas());
         
         alunoRepository.save(aluno);
         submissao = repository.save(submissao);
 
         enviarEmailSilencioso(aluno.getEmail(), "Certificado Aprovado ✅", 
-                "Olá, " + aluno.getName() + "!\nSeu certificado foi APROVADO.\nHoras computadas: " + novasHoras + "h");
+                "Olá, " + aluno.getName() + "! Seu certificado foi APROVADO.");
         
         return new SubmissaoDTO(submissao);
     }
 
     @Transactional
     public SubmissaoDTO rejeitar(Long id, String observacao) {
-        log.info("### FLUXO ### Rejeitando submissão ID: {}. Motivo: {}", id, observacao);
+        log.info("### FLUXO ### Rejeitando submissão ID: {}", id);
         Submissao submissao = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Submissão não encontrada"));
         
@@ -154,7 +165,7 @@ public class SubmissaoService {
 
         Aluno aluno = submissao.getAluno();
         enviarEmailSilencioso(aluno.getEmail(), "Certificado Reprovado ❌", 
-                "Olá, " + aluno.getName() + "!\nSeu certificado foi REPROVADO.\nMotivo: " + observacao);
+                "Motivo: " + observacao);
         
         return new SubmissaoDTO(submissao);
     }
@@ -162,9 +173,8 @@ public class SubmissaoService {
     private void enviarEmailSilencioso(String para, String assunto, String corpo) {
         try {
             emailService.enviarEmail(para, assunto, corpo);
-            log.info("### EMAIL ### Notificação enviada para: {}", para);
         } catch (Exception e) {
-            log.error("### EMAIL ### Falha ao enviar e-mail para {}: {}", para, e.getMessage());
+            log.error("### EMAIL ### Falha: {}", e.getMessage());
         }
     }
 }

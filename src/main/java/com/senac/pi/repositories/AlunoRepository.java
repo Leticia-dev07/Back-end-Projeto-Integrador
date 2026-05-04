@@ -1,6 +1,8 @@
 package com.senac.pi.repositories;
 
 import java.util.List;
+import java.util.Optional; // <-- Nova importação
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,6 +24,11 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     List<Aluno> findByCursoId(@Param("cursoId") Long cursoId);
 
     // --- VERIFICAÇÕES DE DUPLICIDADE ---
+
+    /**
+     * NOVO: Busca o aluno retornando um Optional para tratarmos no Service na hora de vincular
+     */
+    Optional<Aluno> findByEmail(String email);
 
     /**
      * Verifica se já existe um aluno cadastrado com este e-mail.

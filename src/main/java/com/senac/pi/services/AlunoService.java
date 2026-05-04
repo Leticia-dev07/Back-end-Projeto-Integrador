@@ -1,6 +1,7 @@
 package com.senac.pi.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -22,7 +23,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class AlunoService {
 
-    // Declaração manual do log (Resolve o erro "log cannot be resolved")
     private static final Logger log = LoggerFactory.getLogger(AlunoService.class);
 
     @Autowired
@@ -40,18 +40,18 @@ public class AlunoService {
         List<Aluno> list = repository.findAll();
         log.info("{} alunos encontrados.", list.size());
         return list.stream()
-                .map(AlunoDTO::new)
-                .collect(Collectors.toList());
+            .map(AlunoDTO::new)
+            .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public AlunoDTO findById(Long id) {
         log.info("Buscando aluno com ID: {}", id);
         Aluno entity = repository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Aluno com ID {} não encontrado no banco.", id);
-                    return new EntityNotFoundException("Aluno não encontrado");
-                });
+            .orElseThrow(() -> {
+                log.error("Aluno com ID {} não encontrado no banco.", id);
+                return new EntityNotFoundException("Aluno não encontrado");
+            });
         return new AlunoDTO(entity);
     }
 
@@ -60,13 +60,13 @@ public class AlunoService {
         log.info("Listando alunos matriculados no curso ID: {}", cursoId);
         List<Aluno> list = repository.findByCursoId(cursoId);
         return list.stream()
-                .map(AlunoDTO::new)
-                .collect(Collectors.toList());
+            .map(AlunoDTO::new)
+            .collect(Collectors.toList());
     }
 
     @Transactional
     public AlunoDTO insert(AlunoDTO dto) {
-        log.info("Iniciando cadastro de novo aluno: {}", dto.name());
+        log.info("Iniciando cadastro de novo aluno sem vínculo imediato: {}", dto.name());
         try {
             validarDuplicidade(dto);
 
@@ -88,11 +88,7 @@ public class AlunoService {
 
     @Transactional
     public AlunoDTO insertComCurso(Long cursoId, AlunoDTO dto) {
-        log.info("Cadastrando aluno {} vinculado ao curso ID: {}", dto.name(), cursoId);
-        validarDuplicidade(dto);
-
-        Aluno entity = new Aluno();
-        copyDtoToEntity(dto, entity);
+        log.info("Processando aluno {} para o curso ID: {}", dto.name(), cursoId);
 
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> {
@@ -100,16 +96,47 @@ public class AlunoService {
                     return new EntityNotFoundException("Curso não encontrado");
                 });
 
-        entity.setRole(UserRole.ALUNO);
-        entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
-        entity.setHorasAcumuladas(0);
+        // NOVO: Verifica se o aluno já existe pelo e-mail
+        Optional<Aluno> alunoExistente = repository.findByEmail(dto.email());
 
-        entity.addCurso(curso);
-        entity = repository.save(entity);
+        if (alunoExistente.isPresent()) {
+            Aluno entity = alunoExistente.get();
+            
+            // Trava de segurança: se o e-mail for o mesmo, a matrícula também deve bater
+            if (!entity.getMatricula().equals(dto.matricula())) {
+                throw new RuntimeException("Este e-mail já está em uso com uma matrícula diferente!");
+            }
 
-        // Ajustado de getName() para getNome() para evitar erro de compilação
-        log.info("Aluno {} cadastrado e matriculado no curso!", entity.getName());
-        return new AlunoDTO(entity);
+            // Verifica se já está matriculado neste curso específico
+            if (repository.existsByAlunoIdAndCursoId(entity.getId(), cursoId)) {
+                throw new RuntimeException("O aluno já está matriculado neste curso!");
+            }
+
+            // Apenas adiciona o novo vínculo e salva (não reseta a senha nem cria novo usuário)
+            entity.addCurso(curso);
+            entity = repository.save(entity);
+            log.info("Aluno {} já existia no banco e foi matriculado no novo curso!", entity.getName());
+            return new AlunoDTO(entity);
+            
+        } else {
+            // Se o e-mail não existe, valida se a matrícula já foi usada por outro e-mail
+            if (repository.existsByMatricula(dto.matricula())) {
+                throw new RuntimeException("Esta matrícula já está cadastrada para outro aluno!");
+            }
+
+            // Cria o aluno do zero e vincula
+            Aluno entity = new Aluno();
+            copyDtoToEntity(dto, entity);
+
+            entity.setRole(UserRole.ALUNO);
+            entity.setSenhaHash(passwordEncoder.encode(dto.senha()));
+            entity.setHorasAcumuladas(0);
+            entity.addCurso(curso);
+
+            entity = repository.save(entity);
+            log.info("Novo aluno {} cadastrado e matriculado no curso!", entity.getName());
+            return new AlunoDTO(entity);
+        }
     }
 
     @Transactional
