@@ -58,9 +58,6 @@ public class SecurityConfig {
                 
                 .requestMatchers("/certificados/**").permitAll()
 
-                // (OPCIONAL) liberar certificados - cuidado com segurança
-                // .requestMatchers(HttpMethod.GET, "/certificados/**").permitAll()
-
                 // ========================
                 // 🔒 ENDPOINTS PROTEGIDOS
                 // ========================
@@ -76,6 +73,12 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/alunos/**")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
+                // ✅ PERMISSÃO PARA DESVINCULAR (Coordenador + Admin)
+                // Deve vir antes da regra genérica de DELETE
+                .requestMatchers(HttpMethod.DELETE, "/alunos/{alunoId}/cursos/{cursoId}")
+                    .hasAnyRole("ADMIN", "COORDENADOR")
+
+                // 🛑 EXCLUSÃO TOTAL DO ALUNO (Apenas Admin)
                 .requestMatchers(HttpMethod.DELETE, "/alunos/**")
                     .hasRole("ADMIN")
 
