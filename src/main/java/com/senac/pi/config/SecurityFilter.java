@@ -27,24 +27,75 @@ public class SecurityFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
-        var token = this.recoverToken(request);
-        if (token != null) {
-            var login = tokenService.validateToken(token);
-            UserDetails user = userRepository.findByEmail(login).orElse(null);
 
-            if (user != null) {
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        String path = request.getRequestURI();
+
+        // =========================
+        // 🔥 IGNORAR ROTAS PÚBLICAS (SEM SEGURANÇA)
+        // =========================
+        if (isPublicRoute(path)) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        try {
+            // =========================
+            // 🔐 VALIDAÇÃO JWT
+            // =========================
+            String token = recoverToken(request);
+
+            if (token != null) {
+                String login = tokenService.validateToken(token);
+
+                if (login != null) {
+                    UserDetails user = userRepository.findByEmail(login).orElse(null);
+
+                    if (user != null) {
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(
+                                        user,
+                                        null,
+                                        user.getAuthorities()
+                                );
+
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            // 🔥 Evita quebrar requisição com erro de token
+            SecurityContextHolder.clearContext();
+        }
+
         filterChain.doFilter(request, response);
     }
 
+    // =========================
+    // 🔓 ROTAS PÚBLICAS
+    // =========================
+    private boolean isPublicRoute(String path) {
+        return path.startsWith("/certificados/") ||   // PDFs locais
+               path.startsWith("/auth/") ||           // login/register
+               path.startsWith("/v3/api-docs") ||     // swagger
+               path.startsWith("/swagger-ui") ||
+               path.startsWith("/swagger-ui.html");
+    }
+
+    // =========================
+    // 🔑 RECUPERAR TOKEN
+    // =========================
     private String recoverToken(HttpServletRequest request) {
-        var authHeader = request.getHeader("Authorization");
-        if (authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        return authHeader.substring(7);
     }
 }

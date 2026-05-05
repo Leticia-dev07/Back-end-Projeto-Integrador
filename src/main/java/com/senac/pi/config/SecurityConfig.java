@@ -30,33 +30,70 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs Stateless[cite: 10]
-            .cors(Customizer.withDefaults()) // Aplica as configurações do Bean corsConfigurationSource
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT não usa sessão
+            // 🔒 Desabilita CSRF (API stateless)
+            .csrf(csrf -> csrf.disable())
+
+            // 🌐 CORS
+            .cors(Customizer.withDefaults())
+
+            // 🔥 CORREÇÃO DO IFRAME (PDF)
+            .headers(headers -> 
+                headers.frameOptions(frame -> frame.sameOrigin())
+            )
+
+            // 🔐 Stateless (JWT)
+            .sessionManagement(session -> 
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+
+            // 🔑 AUTORIZAÇÃO
             .authorizeHttpRequests(authorize -> authorize
-                // Endpoints Públicos
+
+                // ========================
+                // 🔓 ENDPOINTS PÚBLICOS
+                // ========================
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll() // Caso tenha registro público
-                
-                // Liberação do Swagger UI
+                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 
-                .requestMatchers("/actuator/**").permitAll()
-                
-                // Permissões para Alunos
-                .requestMatchers(HttpMethod.GET, "/alunos/**").hasAnyRole("ADMIN", "COORDENADOR")
-                .requestMatchers(HttpMethod.POST, "/alunos/**").hasAnyRole("ADMIN", "COORDENADOR")
-                .requestMatchers(HttpMethod.DELETE, "/alunos/**").hasRole("ADMIN")
-                
-                // Permissões para Coordenadores
-                .requestMatchers(HttpMethod.GET, "/coordenadores/**").hasAnyRole("ADMIN", "COORDENADOR")
-                .requestMatchers(HttpMethod.POST, "/coordenadores/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/coordenadores/**").hasRole("ADMIN")
+                .requestMatchers("/certificados/**").permitAll()
 
-                // Qualquer outra requisição exige autenticação
+                // (OPCIONAL) liberar certificados - cuidado com segurança
+                // .requestMatchers(HttpMethod.GET, "/certificados/**").permitAll()
+
+                // ========================
+                // 🔒 ENDPOINTS PROTEGIDOS
+                // ========================
+                .requestMatchers(HttpMethod.GET, "/submissoes/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/cursos/**").authenticated()
+
+                // ========================
+                // 👤 ALUNOS
+                // ========================
+                .requestMatchers(HttpMethod.GET, "/alunos/**")
+                    .hasAnyRole("ADMIN", "COORDENADOR", "ALUNO")
+
+                .requestMatchers(HttpMethod.POST, "/alunos/**")
+                    .hasAnyRole("ADMIN", "COORDENADOR")
+
+                .requestMatchers(HttpMethod.DELETE, "/alunos/**")
+                    .hasRole("ADMIN")
+
+                // ========================
+                // 👨‍🏫 COORDENADORES
+                // ========================
+                .requestMatchers(HttpMethod.GET, "/coordenadores/**")
+                    .hasAnyRole("ADMIN", "COORDENADOR")
+
+                // ========================
+                // 🔐 QUALQUER OUTRA ROTA
+                // ========================
                 .anyRequest().authenticated()
             )
+
+            // 🔥 FILTRO JWT
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+
             .build();
     }
 
@@ -64,21 +101,28 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Origens permitidas (Live Server e Localhost)
+        // 🌍 ORIGENS PERMITIDAS (FRONTEND)
         configuration.setAllowedOrigins(Arrays.asList(
             "http://127.0.0.1:5500",
             "http://localhost:5500",
-            "http://localhost:3000" 
+            "http://localhost:3000"
         ));
 
-        // Métodos HTTP permitidos
+        // 📡 MÉTODOS
         configuration.setAllowedMethods(Arrays.asList(
             "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
-        // Cabeçalhos permitidos para o JWT funcionar
+        // 📦 HEADERS PERMITIDOS
         configuration.setAllowedHeaders(Arrays.asList(
-            "Authorization", "Content-Type", "Accept"
+            "Authorization",
+            "Content-Type",
+            "Accept"
+        ));
+
+        // 🔥 IMPORTANTE PRA JWT
+        configuration.setExposedHeaders(Arrays.asList(
+            "Authorization"
         ));
 
         configuration.setAllowCredentials(true);
@@ -90,9 +134,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     @Bean
