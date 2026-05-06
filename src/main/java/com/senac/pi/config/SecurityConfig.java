@@ -33,65 +33,57 @@ public class SecurityConfig {
             // desabilitar o csrf
             .csrf(csrf -> csrf.disable())
 
-            // cors
+            // Ativa o CORS com as configurações definidas abaixo no bean corsConfigurationSource
             .cors(Customizer.withDefaults())
 
-            // Correção do iframe do pdf
+            // Correção do iframe para visualização de PDF e H2 Console
             .headers(headers -> 
                 headers.frameOptions(frame -> frame.sameOrigin())
             )
 
-            // Stateless JWT
+            // Configuração Stateless para API REST com JWT
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // Autorizações
+            // Definição de permissões de rotas
             .authorizeHttpRequests(authorize -> authorize
 
-                // End Points publicos
-
+                // Endpoints públicos (Login, Registro, Swagger e Documentação)
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                
                 .requestMatchers("/certificados/**").permitAll()
 
-                // Liberar o Actuator
+                // Liberar o Actuator para monitoramento do Render
                 .requestMatchers("/actuator/**").permitAll()
 
-                // End Points protegidos
-
+                // Endpoints que exigem autenticação genérica
                 .requestMatchers(HttpMethod.GET, "/submissoes/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/cursos/**").authenticated()
 
-                // Alunos
-
+                // Regras de Alunos por Perfil
                 .requestMatchers(HttpMethod.GET, "/alunos/**")
                     .hasAnyRole("ADMIN", "COORDENADOR", "ALUNO")
 
                 .requestMatchers(HttpMethod.POST, "/alunos/**")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // Permissão para descvincular o aluno do curso
                 .requestMatchers(HttpMethod.DELETE, "/alunos/{alunoId}/cursos/{cursoId}")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // Exclusão do aluno
                 .requestMatchers(HttpMethod.DELETE, "/alunos/**")
                     .hasRole("ADMIN")
 
-                // Coordenadores
-
+                // Regras de Coordenadores
                 .requestMatchers(HttpMethod.GET, "/coordenadores/**")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // Qualquer outra rota
-  
+                // Qualquer outra requisição precisa estar logado
                 .anyRequest().authenticated()
             )
 
-            // Filtro JWT
+            // Adiciona o seu filtro de segurança JWT antes do filtro padrão do Spring
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 
             .build();
@@ -101,30 +93,29 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Origens permitidas pelo front end
-        configuration.setAllowedOrigins(Arrays.asList(
-            "http://127.0.0.1:5500",
-            "http://localhost:5500",
-            "http://localhost:3000"
-        ));
+        // MODO "LIBERAR GERAL": Permite qualquer origem (URL) acessar a API.
+        // Usamos OriginPatterns porque allowCredentials(true) não permite o caractere "*" puro.
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 
-        // Metodos
+        // Métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList(
             "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
-        // Header permitidos
+        // Cabeçalhos permitidos nas requisições
         configuration.setAllowedHeaders(Arrays.asList(
             "Authorization",
             "Content-Type",
-            "Accept"
+            "Accept",
+            "X-Requested-With"
         ));
 
-        // Importante para o JWT
+        // Expõe o cabeçalho Authorization para que o Front-end consiga ler o Token JWT
         configuration.setExposedHeaders(Arrays.asList(
             "Authorization"
         ));
 
+        // Permite o envio de cookies e autenticação (necessário para JWT em muitos cenários)
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
