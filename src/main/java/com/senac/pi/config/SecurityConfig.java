@@ -58,6 +58,9 @@ public class SecurityConfig {
                 
                 .requestMatchers("/certificados/**").permitAll()
 
+                // ✅ LIBERA ACTUATOR (CORREÇÃO DO 403)
+                .requestMatchers("/actuator/**").permitAll()
+
                 // ========================
                 // 🔒 ENDPOINTS PROTEGIDOS
                 // ========================
@@ -74,7 +77,6 @@ public class SecurityConfig {
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
                 // ✅ PERMISSÃO PARA DESVINCULAR (Coordenador + Admin)
-                // Deve vir antes da regra genérica de DELETE
                 .requestMatchers(HttpMethod.DELETE, "/alunos/{alunoId}/cursos/{cursoId}")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
