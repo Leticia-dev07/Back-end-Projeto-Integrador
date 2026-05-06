@@ -1,24 +1,24 @@
-# Etapa 1: Build (Compilação)
-FROM maven:3.9.9-amazoncorretto-25-debian AS build
+# Etapa 1: Build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Cache das dependências
+# Copia o pom e baixa as dependências
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Compilação
+# Copia o código e gera o JAR
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Execução (Ajustada para imagem que existe)
-FROM amazoncorretto:25-al2023-headless
+# Etapa 2: Execução
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Copia o jar gerado
+# Copia o JAR gerado no build
 COPY --from=build /app/target/*.jar app.jar
 
-# Porta do Render
+# Porta padrão
 EXPOSE 8080
 
-# Comando para rodar
+# Comando para rodar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
