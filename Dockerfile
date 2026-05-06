@@ -1,25 +1,24 @@
 # Etapa 1: Build (Compilação)
-# Usamos o Maven 3.9.9 que é o mais estável para lidar com Java 25
 FROM maven:3.9.9-amazoncorretto-25-debian AS build
 WORKDIR /app
 
-# Copia apenas o pom.xml primeiro para baixar as dependências e ganhar tempo no próximo deploy
+# Cache das dependências
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Agora copia o código fonte e faz o build
+# Compilação
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Runtime (O que vai rodar de fato no Render)
-FROM openjdk:25-slim-bookworm
+# Etapa 2: Execução (Ajustada para imagem que existe)
+FROM amazoncorretto:25-al2023-headless
 WORKDIR /app
 
-# Copia o arquivo .jar que o Maven gerou (o nome geralmente é pi-0.0.1-SNAPSHOT.jar)
+# Copia o jar gerado
 COPY --from=build /app/target/*.jar app.jar
 
-# Porta que o Spring Boot usa
+# Porta do Render
 EXPOSE 8080
 
-# Comando para iniciar a aplicação no Render
+# Comando para rodar
 ENTRYPOINT ["java", "-jar", "app.jar"]
