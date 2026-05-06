@@ -1,16 +1,17 @@
 package com.senac.pi.config;
 
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.senac.pi.entities.Aluno;
 import com.senac.pi.entities.Categoria;
-import com.senac.pi.entities.Certificado;
 import com.senac.pi.entities.Coordenador;
 import com.senac.pi.entities.Curso;
 import com.senac.pi.entities.Submissao;
@@ -59,6 +60,34 @@ public class TestConfig implements CommandLineRunner {
             System.out.println("SISTEMA: Banco vazio. Populando...");
 
             String senha = passwordEncoder.encode("123456");
+
+            // ========================
+            // LER OS PDFs REAIS DA PASTA RESOURCES
+            // ========================
+            byte[] pdfBytes1;
+            byte[] pdfBytes2;
+            
+            try {
+                ClassPathResource resource1 = new ClassPathResource("certificado1.pdf");
+                try (InputStream inputStream = resource1.getInputStream()) {
+                    pdfBytes1 = inputStream.readAllBytes();
+                    System.out.println("SISTEMA: certificado1.pdf carregado com sucesso!");
+                }
+            } catch (Exception e) {
+                System.out.println("SISTEMA: 'certificado1.pdf' não encontrado. Usando bytes provisórios.");
+                pdfBytes1 = "Conteúdo fictício PDF 1".getBytes();
+            }
+
+            try {
+                ClassPathResource resource2 = new ClassPathResource("certificado2.pdf");
+                try (InputStream inputStream = resource2.getInputStream()) {
+                    pdfBytes2 = inputStream.readAllBytes();
+                    System.out.println("SISTEMA: certificado2.pdf carregado com sucesso!");
+                }
+            } catch (Exception e) {
+                System.out.println("SISTEMA: 'certificado2.pdf' não encontrado. Usando bytes provisórios.");
+                pdfBytes2 = "Conteúdo fictício PDF 2".getBytes();
+            }
 
             // ========================
             // SUPER ADMIN
@@ -144,15 +173,10 @@ public class TestConfig implements CommandLineRunner {
                 cat1
             );
 
-            Certificado cert1 = new Certificado();
-            cert1.setNomeArquivo("certificado1.pdf");
-            cert1.setTipoArquivo("application/pdf");
-
-            // 🔥 URL DIRETA PARA A PASTA uploads
-            cert1.setUrlArquivo("http://localhost:8080/certificados/certificado1.pdf");
-
-            sub1.setCertificado(cert1);
-            cert1.setSubmissao(sub1);
+            sub1.setNomeArquivo("certificado1.pdf");
+            sub1.setTipoArquivo("application/pdf");
+            sub1.setUrlArquivo("http://localhost:8080/submissoes/1/arquivo");
+            sub1.setDadosArquivo(pdfBytes1); // ✅ Usando o PDF 1 real
 
             // ========================
             // SUBMISSÃO 2
@@ -167,14 +191,10 @@ public class TestConfig implements CommandLineRunner {
                 cat2
             );
 
-            Certificado cert2 = new Certificado();
-            cert2.setNomeArquivo("certificado2.pdf");
-            cert2.setTipoArquivo("application/pdf");
-
-            cert2.setUrlArquivo("http://localhost:8080/certificados/certificado2.pdf");
-
-            sub2.setCertificado(cert2);
-            cert2.setSubmissao(sub2);
+            sub2.setNomeArquivo("certificado2.pdf");
+            sub2.setTipoArquivo("application/pdf");
+            sub2.setUrlArquivo("http://localhost:8080/submissoes/2/arquivo");
+            sub2.setDadosArquivo(pdfBytes2); // ✅ Usando o PDF 2 real
 
             // ========================
             // SALVAR

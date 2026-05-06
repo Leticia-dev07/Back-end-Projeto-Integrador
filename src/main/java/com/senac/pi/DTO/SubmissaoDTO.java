@@ -17,22 +17,14 @@ public record SubmissaoDTO(
         this(
             entity.getId(),
             entity.getDataEnvio(),
-            // Verifica se o status existe para não dar erro
             entity.getStatus() != null ? entity.getStatus().name() : "PENDENTE",
-            
-            // Verifica as horas
             entity.getHorasAproveitadas() != null ? entity.getHorasAproveitadas() : 0,
-            
             entity.getObservacaoCoordenador(),
-            
-            // Usa o getName() da classe User que você mandou
             entity.getAluno() != null ? entity.getAluno().getName() : "Não identificado",
-            
-            // Usa o getArea() da classe Categoria que você mandou
             entity.getCategoria() != null ? entity.getCategoria().getArea() : "Sem categoria",
             
-            // Verifica o certificado
-            entity.getCertificado() != null ? entity.getCertificado().getUrlArquivo() : null
+            // Alterado: agora pega a URL diretamente da Submissao
+            entity.getUrlArquivo()
         );
     }
 }

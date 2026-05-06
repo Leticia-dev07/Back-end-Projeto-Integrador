@@ -3,7 +3,10 @@ package com.senac.pi.resources;
 import java.net.URI;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.senac.pi.DTO.SubmissaoDTO;
 import com.senac.pi.entities.Submissao;
+import com.senac.pi.services.AlunoService;
 import com.senac.pi.services.SubmissaoService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin(origins = "*")
 @Slf4j
 public class SubmissaoResource {
+	
+	private static final Logger log = LoggerFactory.getLogger(SubmissaoResource.class);
 
     @Autowired
     private SubmissaoService service;
@@ -45,15 +51,43 @@ public class SubmissaoResource {
         return ResponseEntity.ok().body(dto);
     }
 
-    // ATUALIZADO: Agora aceita Multipart (JSON + Arquivo)
+    /**
+     * Retorna os bytes do arquivo (PDF) armazenado no banco para a submissão informada.
+     * O frontend faz um fetch autenticado (Bearer token) e exibe via Blob URL no iframe.
+     */
+    @GetMapping(value = "/{id}/arquivo")
+    public ResponseEntity<byte[]> downloadArquivo(@PathVariable Long id) {
+        Submissao submissao = service.findEntityById(id);
+
+        byte[] dados = submissao.getDadosArquivo();
+
+        if (dados == null || dados.length == 0) {
+            log.warn("### ARQUIVO ### Submissão ID {} não possui arquivo.", id);
+            return ResponseEntity.noContent().build();
+        }
+
+        String contentType = submissao.getTipoArquivo() != null
+                ? submissao.getTipoArquivo()
+                : "application/pdf";
+
+        String nomeArquivo = submissao.getNomeArquivo() != null
+                ? submissao.getNomeArquivo()
+                : "certificado.pdf";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + nomeArquivo + "\"")
+                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(dados.length))
+                .body(dados);
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SubmissaoDTO> insert(
-            @RequestPart("submissao") Submissao obj, 
+            @RequestPart("submissao") Submissao obj,
             @RequestPart("file") MultipartFile file) {
-        
-        // Agora chamamos o service passando os dois parâmetros
+
         SubmissaoDTO dto = service.insert(obj, file);
-        
+
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(dto.id()).toUri();
         return ResponseEntity.created(uri).body(dto);

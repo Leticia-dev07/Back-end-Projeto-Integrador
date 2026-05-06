@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.senac.pi.DTO.SubmissaoDTO;
 import com.senac.pi.entities.Aluno;
 import com.senac.pi.entities.Categoria;
-import com.senac.pi.entities.Certificado;
 import com.senac.pi.entities.Submissao;
 import com.senac.pi.entities.enums.StatusSubmissao;
 import com.senac.pi.repositories.AlunoRepository;
@@ -51,12 +50,20 @@ public class SubmissaoService {
     @Transactional(readOnly = true)
     public SubmissaoDTO findById(Long id) {
         log.info("### SUBMISSÃO ### Buscando submissão ID: {}", id);
-        Submissao entity = repository.findById(id)
+        return new SubmissaoDTO(findEntityById(id));
+    }
+
+    /**
+     * Retorna a entidade completa (com dadosArquivo) — usada pelo endpoint de download.
+     * Separado do findById para não expor os bytes binários no DTO JSON.
+     */
+    @Transactional(readOnly = true)
+    public Submissao findEntityById(Long id) {
+        return repository.findById(id)
                 .orElseThrow(() -> {
                     log.error("### SUBMISSÃO ### ID {} não encontrado.", id);
-                    return new EntityNotFoundException("Submissão não encontrada");
+                    return new EntityNotFoundException("Submissão não encontrada: " + id);
                 });
-        return new SubmissaoDTO(entity);
     }
 
     @Transactional
@@ -71,7 +78,7 @@ public class SubmissaoService {
         try {
             Aluno aluno = alunoRepository.findById(entity.getAluno().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-            
+
             Categoria categoria = categoriaRepository.findById(entity.getCategoria().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
@@ -80,8 +87,8 @@ public class SubmissaoService {
             // Validação de Regra de Negócio (Limite por Semestre)
             Instant dataInicioSemestre = Instant.now().minus(180, ChronoUnit.DAYS);
             long totalEnviado = repository.countByAlunoAndCategoriaInPeriod(
-                    aluno.getId(), 
-                    categoria.getId(), 
+                    aluno.getId(),
+                    categoria.getId(),
                     dataInicioSemestre
             );
 
@@ -90,33 +97,27 @@ public class SubmissaoService {
                 throw new RuntimeException("Limite de envios atingido para a categoria: " + categoria.getArea());
             }
 
-            // LÓGICA DO CERTIFICADO (BYTES NO BANCO)
-            Certificado certificado = new Certificado();
-            certificado.setNomeArquivo(arquivo.getOriginalFilename());
-            certificado.setTipoArquivo(arquivo.getContentType());
-            certificado.setDadosArquivo(arquivo.getBytes()); // Salva os bytes reais aqui
-            
-            entity.setCertificado(certificado);
-            certificado.setSubmissao(entity);
+            entity.setNomeArquivo(arquivo.getOriginalFilename());
+            entity.setTipoArquivo(arquivo.getContentType());
+            entity.setDadosArquivo(arquivo.getBytes());
 
-            // FINALIZAÇÃO
             entity.setAluno(aluno);
             entity.setCategoria(categoria);
             entity.setDataEnvio(Instant.now());
             entity.setStatus(StatusSubmissao.PENDENTE);
             entity.setHorasAproveitadas(categoria.getHorasPorCertificado());
 
-            // Primeiro save para gerar IDs
+            // Primeiro save para gerar o ID
             entity = repository.save(entity);
 
-            // Gera a URL dinâmica para o download/visualização apontando para o seu próprio backend
-            String urlDownload = "http://localhost:8080/certificados/" + entity.getCertificado().getId() + "/download";
-            entity.getCertificado().setUrlArquivo(urlDownload);
-            
-            // Segundo save para atualizar a URL do certificado
+            // URL aponta para o novo endpoint de download
+            String urlDownload = "http://localhost:8080/submissoes/" + entity.getId() + "/arquivo";
+            entity.setUrlArquivo(urlDownload);
+
+            // Segundo save para persistir a URL
             entity = repository.save(entity);
 
-            log.info("### SUBMISSÃO ### Sucesso! Arquivo salvo no MySQL. Submissão ID {}.", entity.getId());
+            log.info("### SUBMISSÃO ### Sucesso! Arquivo salvo. Submissão ID {}.", entity.getId());
             return new SubmissaoDTO(entity);
 
         } catch (IOException e) {
@@ -128,8 +129,7 @@ public class SubmissaoService {
     @Transactional
     public SubmissaoDTO aprovar(Long id) {
         log.info("### FLUXO ### Aprovando submissão ID: {}", id);
-        Submissao submissao = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Submissão não encontrada"));
+        Submissao submissao = findEntityById(id);
 
         if (submissao.getStatus() != StatusSubmissao.PENDENTE) {
             log.warn("### FLUXO ### Tentativa de aprovar submissão já processada.");
@@ -137,36 +137,33 @@ public class SubmissaoService {
         }
 
         submissao.setStatus(StatusSubmissao.APROVADO);
-        
+
         Aluno aluno = submissao.getAluno();
         int horasAnteriores = (aluno.getHorasAcumuladas() != null) ? aluno.getHorasAcumuladas() : 0;
-        int novasHoras = submissao.getHorasAproveitadas();
-        
-        aluno.setHorasAcumuladas(horasAnteriores + novasHoras);
-        
+        aluno.setHorasAcumuladas(horasAnteriores + submissao.getHorasAproveitadas());
+
         alunoRepository.save(aluno);
         submissao = repository.save(submissao);
 
-        enviarEmailSilencioso(aluno.getEmail(), "Certificado Aprovado ✅", 
+        enviarEmailSilencioso(aluno.getEmail(), "Certificado Aprovado ✅",
                 "Olá, " + aluno.getName() + "! Seu certificado foi APROVADO.");
-        
+
         return new SubmissaoDTO(submissao);
     }
 
     @Transactional
     public SubmissaoDTO rejeitar(Long id, String observacao) {
         log.info("### FLUXO ### Rejeitando submissão ID: {}", id);
-        Submissao submissao = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Submissão não encontrada"));
-        
+        Submissao submissao = findEntityById(id);
+
         submissao.setStatus(StatusSubmissao.REJEITADO);
         submissao.setObservacaoCoordenador(observacao);
         submissao = repository.save(submissao);
 
         Aluno aluno = submissao.getAluno();
-        enviarEmailSilencioso(aluno.getEmail(), "Certificado Reprovado ❌", 
+        enviarEmailSilencioso(aluno.getEmail(), "Certificado Reprovado ❌",
                 "Motivo: " + observacao);
-        
+
         return new SubmissaoDTO(submissao);
     }
 

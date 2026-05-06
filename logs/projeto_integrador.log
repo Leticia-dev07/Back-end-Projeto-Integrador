@@ -1841,3 +1841,221 @@ jakarta.mail.AuthenticationFailedException: 535-5.7.8 Username and Password not 
 2026-05-05T16:40:54.674-03:00  INFO 21792 --- [pi] [RMI TCP Connection(15)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-05-05T16:40:55.047-03:00  INFO 21792 --- [pi] [RMI TCP Connection(15)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-05-05T16:40:55.623-03:00  INFO 21792 --- [pi] [RMI TCP Connection(15)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-05T20:53:20.056-03:00  INFO 28892 --- [pi] [main] com.senac.pi.PiApplication               : Starting PiApplication using Java 25.0.1 with PID 28892 (C:\Users\pasco\Documents\Back-end-Projeto-Integrador\target\classes started by xxxxxx in C:\Users\pasco\Documents\Back-end-Projeto-Integrador)
+2026-05-05T20:53:20.069-03:00 DEBUG 28892 --- [pi] [main] com.senac.pi.PiApplication               : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-05T20:53:20.073-03:00  INFO 28892 --- [pi] [main] com.senac.pi.PiApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-05-05T20:53:23.588-03:00  INFO 28892 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-05T20:53:23.817-03:00  INFO 28892 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 197 ms. Found 8 JPA repository interfaces.
+2026-05-05T20:53:26.185-03:00  INFO 28892 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-05T20:53:26.236-03:00  INFO 28892 --- [pi] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-05T20:53:26.237-03:00  INFO 28892 --- [pi] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-05T20:53:26.431-03:00  INFO 28892 --- [pi] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 5984 ms
+2026-05-05T20:53:27.169-03:00  INFO 28892 --- [pi] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-05T20:53:27.488-03:00  INFO 28892 --- [pi] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-05T20:53:29.174-03:00  INFO 28892 --- [pi] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-05T20:53:29.388-03:00  INFO 28892 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-05T20:53:30.789-03:00  INFO 28892 --- [pi] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2396408a
+2026-05-05T20:53:30.796-03:00  INFO 28892 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-05T20:53:31.025-03:00  WARN 28892 --- [pi] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-05T20:53:31.095-03:00  INFO 28892 --- [pi] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/pi]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: pi/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-05T20:53:34.195-03:00  INFO 28892 --- [pi] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-05T20:53:37.283-03:00  INFO 28892 --- [pi] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-05T20:53:37.457-03:00  INFO 28892 --- [pi] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-05T20:53:38.265-03:00 DEBUG 28892 --- [pi] [main] com.senac.pi.config.SecurityFilter       : Filter 'securityFilter' configured for use
+2026-05-05T20:53:40.164-03:00  INFO 28892 --- [pi] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authService
+2026-05-05T20:53:40.809-03:00  WARN 28892 --- [pi] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-05T20:53:41.819-03:00  INFO 28892 --- [pi] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-05-05T20:53:44.740-03:00  INFO 28892 --- [pi] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-05-05T20:53:45.242-03:00  INFO 28892 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-05T20:53:45.277-03:00  INFO 28892 --- [pi] [main] com.senac.pi.PiApplication               : Started PiApplication in 26.418 seconds (process running for 29.607)
+2026-05-05T20:53:48.467-03:00  INFO 28892 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-05T20:53:48.468-03:00  INFO 28892 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-05T20:53:48.474-03:00  INFO 28892 --- [pi] [RMI TCP Connection(10)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2026-05-05T21:11:30.787-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.AuthService        : ### AUTH ### Tentativa de autenticação para o e-mail: admin@senac.com
+2026-05-05T21:11:32.987-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.AuthService        : ### AUTH ### Usuário encontrado no banco! Prosseguindo com a validação de senha...
+2026-05-05T21:11:33.202-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.TokenService       : ### AUTH ### Gerando token para o usuário: admin@senac.com
+2026-05-05T21:11:33.420-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.TokenService       : ### AUTH ### Token gerado com sucesso para a role: ADMIN
+2026-05-05T21:11:37.775-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-05T21:11:37.778-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-05T21:11:37.784-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: admin@senac.com
+2026-05-05T21:11:38.166-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-2] c.senac.pi.services.CoordenadorService   : ### COORD ### Listando todos os coordenadores...
+2026-05-05T21:11:38.204-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-05T21:11:38.205-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.AlunoService       : Buscando todos os alunos cadastrados...
+2026-05-05T21:11:38.320-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.AlunoService       : 1 alunos encontrados.
+2026-05-05T21:11:38.325-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-2] c.senac.pi.services.CoordenadorService   : ### COORD ### 1 coordenadores encontrados.
+2026-05-05T21:11:38.339-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 1
+2026-05-05T21:11:55.786-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.AuthService        : ### AUTH ### Tentativa de autenticação para o e-mail: coordenador@senac.com
+2026-05-05T21:11:55.799-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.AuthService        : ### AUTH ### Usuário encontrado no banco! Prosseguindo com a validação de senha...
+2026-05-05T21:11:56.019-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Gerando token para o usuário: coordenador@senac.com
+2026-05-05T21:11:56.021-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Token gerado com sucesso para a role: COORDENADOR
+2026-05-05T21:11:58.520-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:11:58.522-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:11:58.538-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:11:58.540-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:12:03.945-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:12:03.967-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:12:05.847-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:12:05.863-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:12:11.755-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:13.945-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.AuthService        : ### AUTH ### Tentativa de autenticação para o e-mail: coordenador@senac.com
+2026-05-05T21:23:14.311-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.AuthService        : ### AUTH ### Usuário encontrado no banco! Prosseguindo com a validação de senha...
+2026-05-05T21:23:14.566-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Gerando token para o usuário: coordenador@senac.com
+2026-05-05T21:23:14.613-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token gerado com sucesso para a role: COORDENADOR
+2026-05-05T21:23:16.665-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:16.668-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:16.747-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:23:16.765-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:23:19.989-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:20.019-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:23:22.473-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:22.486-03:00  INFO 28892 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:23:28.671-03:00 DEBUG 28892 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:23:43.152-03:00  INFO 28892 --- [pi] [RMI TCP Connection(47)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2026-05-05T21:23:43.290-03:00  INFO 28892 --- [pi] [RMI TCP Connection(47)-127.0.0.1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-05T21:23:43.339-03:00  INFO 28892 --- [pi] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-05T21:23:43.459-03:00  INFO 28892 --- [pi] [RMI TCP Connection(47)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-05T21:23:43.542-03:00  INFO 28892 --- [pi] [RMI TCP Connection(47)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-05T21:23:43.580-03:00  INFO 28892 --- [pi] [RMI TCP Connection(47)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-05-05T21:31:55.028-03:00  INFO 4192 --- [pi] [main] com.senac.pi.PiApplication               : Starting PiApplication using Java 25.0.1 with PID 4192 (C:\Users\pasco\Documents\Back-end-Projeto-Integrador\target\classes started by xxxxxx in C:\Users\pasco\Documents\Back-end-Projeto-Integrador)
+2026-05-05T21:31:55.036-03:00 DEBUG 4192 --- [pi] [main] com.senac.pi.PiApplication               : Running with Spring Boot v4.0.5, Spring v7.0.6
+2026-05-05T21:31:55.040-03:00  INFO 4192 --- [pi] [main] com.senac.pi.PiApplication               : No active profile set, falling back to 1 default profile: "default"
+2026-05-05T21:31:58.716-03:00  INFO 4192 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-05-05T21:31:58.901-03:00  INFO 4192 --- [pi] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 160 ms. Found 8 JPA repository interfaces.
+2026-05-05T21:32:00.707-03:00  INFO 4192 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-05-05T21:32:00.743-03:00  INFO 4192 --- [pi] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-05-05T21:32:00.744-03:00  INFO 4192 --- [pi] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.20]
+2026-05-05T21:32:00.900-03:00  INFO 4192 --- [pi] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 5685 ms
+2026-05-05T21:32:01.435-03:00  INFO 4192 --- [pi] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-05-05T21:32:01.631-03:00  INFO 4192 --- [pi] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-05-05T21:32:02.746-03:00  INFO 4192 --- [pi] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-05-05T21:32:02.835-03:00  INFO 4192 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-05-05T21:32:03.864-03:00  INFO 4192 --- [pi] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@23f539df
+2026-05-05T21:32:03.868-03:00  INFO 4192 --- [pi] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-05-05T21:32:04.094-03:00  WARN 4192 --- [pi] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-05-05T21:32:04.152-03:00  INFO 4192 --- [pi] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/pi]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: pi/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-05-05T21:32:07.064-03:00  INFO 4192 --- [pi] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-05-05T21:32:07.417-03:00  INFO 4192 --- [pi] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-05-05T21:32:07.642-03:00  INFO 4192 --- [pi] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-05-05T21:32:08.510-03:00 DEBUG 4192 --- [pi] [main] com.senac.pi.config.SecurityFilter       : Filter 'securityFilter' configured for use
+2026-05-05T21:32:10.553-03:00  INFO 4192 --- [pi] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name authService
+2026-05-05T21:32:11.119-03:00  WARN 4192 --- [pi] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-05-05T21:32:11.759-03:00  INFO 4192 --- [pi] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-05-05T21:32:13.046-03:00  INFO 4192 --- [pi] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-05-05T21:32:13.495-03:00  INFO 4192 --- [pi] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-05-05T21:32:13.532-03:00  INFO 4192 --- [pi] [main] com.senac.pi.PiApplication               : Started PiApplication in 19.751 seconds (process running for 22.433)
+2026-05-05T21:32:15.660-03:00  INFO 4192 --- [pi] [RMI TCP Connection(7)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-05-05T21:32:15.661-03:00  INFO 4192 --- [pi] [RMI TCP Connection(7)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-05-05T21:32:15.666-03:00  INFO 4192 --- [pi] [RMI TCP Connection(7)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2026-05-05T21:32:37.343-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.AuthService        : ### AUTH ### Tentativa de autenticação para o e-mail: coordenador@senac.com
+2026-05-05T21:32:37.509-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.AuthService        : ### AUTH ### Usuário encontrado no banco! Prosseguindo com a validação de senha...
+2026-05-05T21:32:37.691-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Gerando token para o usuário: coordenador@senac.com
+2026-05-05T21:32:37.766-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token gerado com sucesso para a role: COORDENADOR
+2026-05-05T21:32:40.045-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:32:40.045-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:32:40.214-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:32:40.233-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:32:43.713-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:32:43.733-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:32:45.232-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:32:45.257-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:32:47.583-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-1] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:12.262-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:12.369-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:34:23.745-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:23.773-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.SubmissaoService   : ### FLUXO ### Aprovando submissão ID: 1
+2026-05-05T21:34:23.880-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.EmailService       : ### EMAIL ### Preparando envio para: aluno@senac.com
+2026-05-05T21:34:23.883-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.EmailService       : ### EMAIL ### Assunto: Certificado Aprovado ✅
+2026-05-05T21:34:27.065-03:00 ERROR 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.EmailService       : ### EMAIL ### Falha ao enviar e-mail para aluno@senac.com. Detalhes: Authentication failed
+2026-05-05T21:34:28.259-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:28.272-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:34:38.761-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-1] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:38.779-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-1] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 1
+2026-05-05T21:34:40.001-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:40.023-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:34:41.770-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:41.780-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:41.785-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:34:41.796-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:34:51.674-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:51.692-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-8] c.senac.pi.services.CoordenadorService   : ### COORD ### Listando todos os coordenadores...
+2026-05-05T21:34:51.702-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-8] c.senac.pi.services.CoordenadorService   : ### COORD ### 1 coordenadores encontrados.
+2026-05-05T21:34:51.751-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:51.773-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-05T21:34:51.791-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 1
+2026-05-05T21:34:51.855-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:34:51.868-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:35:42.000-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:42.015-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.AlunoService       : Buscando aluno com ID: 3
+2026-05-05T21:35:42.049-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:42.063-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.AlunoService       : Buscando aluno com ID: 3
+2026-05-05T21:35:42.102-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:42.103-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-1] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:42.114-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:35:57.232-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-4] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:57.248-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-4] c.senac.pi.services.CoordenadorService   : ### COORD ### Listando todos os coordenadores...
+2026-05-05T21:35:57.255-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-4] c.senac.pi.services.CoordenadorService   : ### COORD ### 1 coordenadores encontrados.
+2026-05-05T21:35:57.289-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:57.303-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-05T21:35:57.314-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 1
+2026-05-05T21:35:57.338-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:57.353-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-8] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:35:58.287-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:58.299-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-05T21:35:58.313-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 1
+2026-05-05T21:35:58.347-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:58.348-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:35:58.357-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-10] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:35:58.358-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:35:59.989-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:00.011-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:36:01.353-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:01.367-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 2
+2026-05-05T21:36:03.248-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:07.105-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:07.122-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 2
+2026-05-05T21:36:18.599-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:18.625-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.SubmissaoService   : ### FLUXO ### Rejeitando submissão ID: 2
+2026-05-05T21:36:18.672-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.EmailService       : ### EMAIL ### Preparando envio para: aluno@senac.com
+2026-05-05T21:36:18.672-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.EmailService       : ### EMAIL ### Assunto: Certificado Reprovado ❌
+2026-05-05T21:36:21.424-03:00 ERROR 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.EmailService       : ### EMAIL ### Falha ao enviar e-mail para aluno@senac.com. Detalhes: Authentication failed
+2026-05-05T21:36:22.381-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:22.392-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-6] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 2
+2026-05-05T21:36:29.370-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:29.392-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-9] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Buscando submissão ID: 2
+2026-05-05T21:36:29.845-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:29.855-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-3] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:36:32.066-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:32.081-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.CursoService       : ### CURSO ### Buscando todos os cursos cadastrados.
+2026-05-05T21:36:32.094-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-2] com.senac.pi.services.CursoService       : ### CURSO ### Total de cursos retornados: 1
+2026-05-05T21:36:32.119-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:32.129-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-5] com.senac.pi.services.SubmissaoService   : ### SUBMISSÃO ### Listando todas as submissões.
+2026-05-05T21:36:32.137-03:00 DEBUG 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.TokenService       : ### AUTH ### Token validado com sucesso para: coordenador@senac.com
+2026-05-05T21:36:32.148-03:00  INFO 4192 --- [pi] [http-nio-8080-exec-7] com.senac.pi.services.AlunoService       : Listando alunos matriculados no curso ID: 1
+2026-05-05T21:36:56.802-03:00  INFO 4192 --- [pi] [RMI TCP Connection(14)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2026-05-05T21:36:56.853-03:00  INFO 4192 --- [pi] [RMI TCP Connection(14)-127.0.0.1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-05-05T21:36:56.888-03:00  INFO 4192 --- [pi] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-05-05T21:36:56.939-03:00  INFO 4192 --- [pi] [RMI TCP Connection(14)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-05-05T21:36:56.980-03:00  INFO 4192 --- [pi] [RMI TCP Connection(14)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-05-05T21:36:57.000-03:00  INFO 4192 --- [pi] [RMI TCP Connection(14)-127.0.0.1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

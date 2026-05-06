@@ -9,19 +9,19 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "tb_submissao")
 public class Submissao implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private Instant dataEnvio;
-	private Integer status;
+    private Instant dataEnvio;
+    private Integer status;
 
-	private Integer horasAproveitadas;
-	private String observacaoCoordenador;
+    private Integer horasAproveitadas;
+    private String observacaoCoordenador;
 
-	@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "coordenador_id")
     private Coordenador coordenador; 
 
@@ -29,70 +29,76 @@ public class Submissao implements Serializable {
     @JoinColumn(name = "aluno_id")
     private Aluno aluno;
 
-	@ManyToOne
-	@JoinColumn(name = "categoria_id")
-	private Categoria categoria;
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "certificado_id")
-	private Certificado certificado;
+    // Novos campos substituindo a entidade Certificado
+    private String nomeArquivo;
+    private String tipoArquivo;
 
-	public Submissao() {
-	}
+    @Lob
+    @Column(columnDefinition="LONGBLOB") // Importante para arquivos grandes no MySQL
+    private byte[] dadosArquivo;
+    
+    private String urlArquivo;
 
-	public Submissao(Long id, Instant dataEnvio, StatusSubmissao status, Integer horasAproveitadas,
-			String observacaoCoordenador, Aluno aluno, Categoria categoria) {
-		this.id = id;
-		this.dataEnvio = dataEnvio;
-		setStatus(status);
-		this.horasAproveitadas = horasAproveitadas;
-		this.observacaoCoordenador = observacaoCoordenador;
-		this.aluno = aluno;
-		this.categoria = categoria;
-	}
+    public Submissao() {
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Submissao(Long id, Instant dataEnvio, StatusSubmissao status, Integer horasAproveitadas,
+            String observacaoCoordenador, Aluno aluno, Categoria categoria) {
+        this.id = id;
+        this.dataEnvio = dataEnvio;
+        setStatus(status);
+        this.horasAproveitadas = horasAproveitadas;
+        this.observacaoCoordenador = observacaoCoordenador;
+        this.aluno = aluno;
+        this.categoria = categoria;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public Instant getDataEnvio() {
-		return dataEnvio;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setDataEnvio(Instant dataEnvio) {
-		this.dataEnvio = dataEnvio;
-	}
+    public Instant getDataEnvio() {
+        return dataEnvio;
+    }
 
-	public StatusSubmissao getStatus() {
-		return status != null ? StatusSubmissao.valueOf(status) : null;
-	}
+    public void setDataEnvio(Instant dataEnvio) {
+        this.dataEnvio = dataEnvio;
+    }
 
-	public void setStatus(StatusSubmissao status) {
-		if (status != null)
-			this.status = status.getCode();
-	}
+    public StatusSubmissao getStatus() {
+        return status != null ? StatusSubmissao.valueOf(status) : null;
+    }
 
-	public Integer getHorasAproveitadas() {
-		return horasAproveitadas;
-	}
+    public void setStatus(StatusSubmissao status) {
+        if (status != null)
+            this.status = status.getCode();
+    }
 
-	public void setHorasAproveitadas(Integer horasAproveitadas) {
-		this.horasAproveitadas = horasAproveitadas;
-	}
+    public Integer getHorasAproveitadas() {
+        return horasAproveitadas;
+    }
 
-	public String getObservacaoCoordenador() {
-		return observacaoCoordenador;
-	}
+    public void setHorasAproveitadas(Integer horasAproveitadas) {
+        this.horasAproveitadas = horasAproveitadas;
+    }
 
-	public void setObservacaoCoordenador(String observacaoCoordenador) {
-		this.observacaoCoordenador = observacaoCoordenador;
-	}
-	
-	public Coordenador getCoordenador() {
+    public String getObservacaoCoordenador() {
+        return observacaoCoordenador;
+    }
+
+    public void setObservacaoCoordenador(String observacaoCoordenador) {
+        this.observacaoCoordenador = observacaoCoordenador;
+    }
+    
+    public Coordenador getCoordenador() {
         return coordenador;
     }
 
@@ -100,42 +106,67 @@ public class Submissao implements Serializable {
         this.coordenador = coordenador;
     }
 
-	public Aluno getAluno() {
-		return aluno;
-	}
+    public Aluno getAluno() {
+        return aluno;
+    }
 
-	public void setAluno(Aluno aluno) {
-		this.aluno = aluno;
-	}
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
+    }
 
-	public Categoria getCategoria() {
-		return categoria;
-	}
+    public Categoria getCategoria() {
+        return categoria;
+    }
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
 
-	public Certificado getCertificado() {
-		return certificado;
-	}
+    // Getters e Setters dos novos campos de arquivo
+    public String getNomeArquivo() {
+        return nomeArquivo;
+    }
 
-	public void setCertificado(Certificado certificado) {
-		this.certificado = certificado;
-	}
+    public void setNomeArquivo(String nomeArquivo) {
+        this.nomeArquivo = nomeArquivo;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    public String getTipoArquivo() {
+        return tipoArquivo;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!(obj instanceof Submissao))
-			return false;
-		Submissao other = (Submissao) obj;
-		return Objects.equals(id, other.id);
-	}
+    public void setTipoArquivo(String tipoArquivo) {
+        this.tipoArquivo = tipoArquivo;
+    }
+
+    public byte[] getDadosArquivo() {
+        return dadosArquivo;
+    }
+
+    public void setDadosArquivo(byte[] dadosArquivo) {
+        this.dadosArquivo = dadosArquivo;
+    }
+
+    public String getUrlArquivo() {
+        return urlArquivo;
+    }
+
+    public void setUrlArquivo(String urlArquivo) {
+        this.urlArquivo = urlArquivo;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof Submissao))
+            return false;
+        Submissao other = (Submissao) obj;
+        return Objects.equals(id, other.id);
+    }
 }
