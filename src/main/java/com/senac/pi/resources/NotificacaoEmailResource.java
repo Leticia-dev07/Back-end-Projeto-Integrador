@@ -22,7 +22,6 @@ public class NotificacaoEmailResource {
 	@Autowired
 	private NotificacaoEmailRepository repository;
 
-	//buscar todos
 	@GetMapping
 	public ResponseEntity<List<NotificacaoEmail>> findAll(){
 		List<NotificacaoEmail> list = repository.findAll();

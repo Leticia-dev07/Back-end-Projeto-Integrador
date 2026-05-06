@@ -8,16 +8,16 @@ public record CursoDTO(
     String nome,
     String descricao,
     Integer cargaHorariaMax,
-    Coordenador coordenador // Adicionamos este campo
+    Coordenador coordenador 
 ) {
-    // Construtor para converter Entity -> DTO
+    // Construtor para converter Entity em DTO
     public CursoDTO(Curso entity) {
         this(
             entity.getId(),
             entity.getNome(),
             entity.getDescricao(),
             entity.getCargaHorariaMax(),
-            // Pegamos o primeiro coordenador do Set (se existir)
+            
             entity.getCoordenadores().isEmpty() ? null : entity.getCoordenadores().iterator().next()
         );
     }

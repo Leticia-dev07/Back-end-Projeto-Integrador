@@ -6,7 +6,7 @@ public record CoordenadorDTO(
     Long id,
     String name,
     String email,
-    String password // Adicionado para o cadastro
+    String password 
 ) {
     public CoordenadorDTO(Coordenador entity) {
         this(entity.getId(), entity.getName(), entity.getEmail(), null);

@@ -49,8 +49,8 @@ public class AlunoResource {
     }
 
     /**
-     * NOVO: Retorna a lista de alunos vinculados a um curso específico.
-     * Utilizado para alimentar a tabela/lista na tela de Perfil do Curso.
+     * Retorna a lista de alunos vinculados a um curso específico.
+     * Utilizado para gerar lista na tela de Perfil do Curso.
      */
     @GetMapping(value = "/curso/{cursoId}")
     public ResponseEntity<List<AlunoDTO>> findByCurso(@PathVariable Long cursoId) {
@@ -59,7 +59,7 @@ public class AlunoResource {
     }
 
     /**
-     * Insere um novo aluno sem vínculo imediato a um curso.
+     * Insere um novo aluno sem vincular a um curso.
      */
     @PostMapping
     public ResponseEntity<AlunoDTO> insert(@RequestBody AlunoDTO dto) {
@@ -70,8 +70,8 @@ public class AlunoResource {
     }
 
     /**
-     * Insere um novo aluno e já o vincula a um curso específico.
-     * Endpoint usado pelo formulário de cadastro dentro do contexto de um curso.
+     * Insere um novo aluno e já vincula a um curso específico.
+     * Endpoint usado pelo formulário de cadastro dentro do perfil do curso
      */
     @PostMapping(value = "/curso/{cursoId}")
     public ResponseEntity<AlunoDTO> insertComCurso(@PathVariable Long cursoId, @RequestBody AlunoDTO dto) {

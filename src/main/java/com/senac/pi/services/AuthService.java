@@ -12,7 +12,7 @@ import com.senac.pi.repositories.UserRepository;
 @Service
 public class AuthService implements UserDetailsService {
 
-    // Criando o logger manual para evitar erros de compilação
+    // Criado o logger manual para evitar erros de compilação
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired

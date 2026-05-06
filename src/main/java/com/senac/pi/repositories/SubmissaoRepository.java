@@ -11,6 +11,6 @@ public interface SubmissaoRepository extends JpaRepository<Submissao, Long> {
     @Query("SELECT COUNT(obj) FROM Submissao obj WHERE obj.aluno.id = :alunoId " +
            "AND obj.categoria.id = :categoriaId " +
            "AND obj.dataEnvio >= :dataInicio " +
-           "AND obj.status != 3") // 3 é o código para REJEITADO no nosso Enum
+           "AND obj.status != 3") 
     long countByAlunoAndCategoriaInPeriod(Long alunoId, Long categoriaId, Instant dataInicio);
 }

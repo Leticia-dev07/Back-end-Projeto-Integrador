@@ -32,12 +32,10 @@ public class Coordenador extends User {
         super(id, name, email, senhaHash, UserRole.COORDENADOR);
     }
 
-    // ✅ Getter IMPORTANTE
     public Set<Curso> getCursos() {
         return cursos;
     }
 
-    // ✅ Métodos auxiliares (boa prática)
     public void addCurso(Curso curso) {
         cursos.add(curso);
     }

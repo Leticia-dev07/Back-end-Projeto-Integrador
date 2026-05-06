@@ -36,8 +36,6 @@ public class Categoria implements Serializable {
 	@JoinColumn(name = "curso_id")
 	private Curso curso;
 
-	// ESTA É A LINHA QUE RESOLVE O ERRO:
-	// O 'mappedBy' deve ser exatamente o nome do atributo lá na classe Submissao
 	@JsonIgnore
 	@OneToMany(mappedBy = "categoria")
 	private List<Submissao> submissoes = new ArrayList<>();
@@ -54,7 +52,6 @@ public class Categoria implements Serializable {
 		this.limiteSubmissoesSemestre = limiteSubmissoesSemestre;
 	}
 
-	// Getters e Setters
 	public Long getId() {
 		return id;
 	}

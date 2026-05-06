@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    // Logger manual para monitorar o status dos envios
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
     @Autowired

@@ -18,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class UserService {
 
-    // Logger manual para rastreabilidade de usuários
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Autowired

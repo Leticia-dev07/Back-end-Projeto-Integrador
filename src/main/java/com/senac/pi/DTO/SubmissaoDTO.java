@@ -23,7 +23,7 @@ public record SubmissaoDTO(
             entity.getAluno() != null ? entity.getAluno().getName() : "Não identificado",
             entity.getCategoria() != null ? entity.getCategoria().getArea() : "Sem categoria",
             
-            // Alterado: agora pega a URL diretamente da Submissao
+            //pega a URL diretamente da Submissao
             entity.getUrlArquivo()
         );
     }

@@ -30,73 +30,68 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            // 🔒 Desabilita CSRF (API stateless)
+            // desabilitar o csrf
             .csrf(csrf -> csrf.disable())
 
-            // 🌐 CORS
+            // cors
             .cors(Customizer.withDefaults())
 
-            // 🔥 CORREÇÃO DO IFRAME (PDF)
+            // Correção do iframe do pdf
             .headers(headers -> 
                 headers.frameOptions(frame -> frame.sameOrigin())
             )
 
-            // 🔐 Stateless (JWT)
+            // Stateless JWT
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // 🔑 AUTORIZAÇÃO
+            // Autorizações
             .authorizeHttpRequests(authorize -> authorize
 
-                // ========================
-                // 🔓 ENDPOINTS PÚBLICOS
-                // ========================
+                // End Points publicos
+
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 
                 .requestMatchers("/certificados/**").permitAll()
 
-                // ✅ LIBERA ACTUATOR (CORREÇÃO DO 403)
+                // Liberar o Actuator
                 .requestMatchers("/actuator/**").permitAll()
 
-                // ========================
-                // 🔒 ENDPOINTS PROTEGIDOS
-                // ========================
+                // End Points protegidos
+
                 .requestMatchers(HttpMethod.GET, "/submissoes/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/cursos/**").authenticated()
 
-                // ========================
-                // 👤 ALUNOS
-                // ========================
+                // Alunos
+
                 .requestMatchers(HttpMethod.GET, "/alunos/**")
                     .hasAnyRole("ADMIN", "COORDENADOR", "ALUNO")
 
                 .requestMatchers(HttpMethod.POST, "/alunos/**")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // ✅ PERMISSÃO PARA DESVINCULAR (Coordenador + Admin)
+                // Permissão para descvincular o aluno do curso
                 .requestMatchers(HttpMethod.DELETE, "/alunos/{alunoId}/cursos/{cursoId}")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // 🛑 EXCLUSÃO TOTAL DO ALUNO (Apenas Admin)
+                // Exclusão do aluno
                 .requestMatchers(HttpMethod.DELETE, "/alunos/**")
                     .hasRole("ADMIN")
 
-                // ========================
-                // 👨‍🏫 COORDENADORES
-                // ========================
+                // Coordenadores
+
                 .requestMatchers(HttpMethod.GET, "/coordenadores/**")
                     .hasAnyRole("ADMIN", "COORDENADOR")
 
-                // ========================
-                // 🔐 QUALQUER OUTRA ROTA
-                // ========================
+                // Qualquer outra rota
+  
                 .anyRequest().authenticated()
             )
 
-            // 🔥 FILTRO JWT
+            // Filtro JWT
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
 
             .build();
@@ -106,26 +101,26 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // 🌍 ORIGENS PERMITIDAS (FRONTEND)
+        // Origens permitidas pelo front end
         configuration.setAllowedOrigins(Arrays.asList(
             "http://127.0.0.1:5500",
             "http://localhost:5500",
             "http://localhost:3000"
         ));
 
-        // 📡 MÉTODOS
+        // Metodos
         configuration.setAllowedMethods(Arrays.asList(
             "GET", "POST", "PUT", "DELETE", "OPTIONS"
         ));
 
-        // 📦 HEADERS PERMITIDOS
+        // Header permitidos
         configuration.setAllowedHeaders(Arrays.asList(
             "Authorization",
             "Content-Type",
             "Accept"
         ));
 
-        // 🔥 IMPORTANTE PRA JWT
+        // Importante para o JWT
         configuration.setExposedHeaders(Arrays.asList(
             "Authorization"
         ));

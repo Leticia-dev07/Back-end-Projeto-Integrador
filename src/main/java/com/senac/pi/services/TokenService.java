@@ -18,7 +18,6 @@ import com.senac.pi.entities.User;
 @Service
 public class TokenService {
 
-    // Logger manual para monitorar a segurança
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
     @Value("${api.security.token.secret}")

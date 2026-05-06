@@ -18,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class CursoService {
 
-    // Logger manual para visibilidade no console
     private static final Logger log = LoggerFactory.getLogger(CursoService.class);
 
     @Autowired

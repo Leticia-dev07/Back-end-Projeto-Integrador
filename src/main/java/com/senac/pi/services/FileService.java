@@ -15,10 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileService {
 
-    // Logger manual para rastreamento de arquivos
     private static final Logger log = LoggerFactory.getLogger(FileService.class);
 
-    // Define o caminho da pasta onde os certificados serão salvos
     private final Path rootLocation = Paths.get("uploads/certificados");
 
     public String saveFile(MultipartFile file) {

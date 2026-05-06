@@ -22,7 +22,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class CoordenadorService {
 
-    // Logger manual para evitar conflitos com a IDE
     private static final Logger log = LoggerFactory.getLogger(CoordenadorService.class);
 
     @Autowired

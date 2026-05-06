@@ -58,7 +58,6 @@ public class CoordenadorResource {
 
     /**
      * Endpoint para desvincular um coordenador específico de um curso específico.
-     * Chamado pelo front-end no ícone de lixeira do coordenador.
      */
     @DeleteMapping(value = "/{coordId}/cursos/{cursoId}")
     public ResponseEntity<Void> desvincularCurso(@PathVariable Long coordId, @PathVariable Long cursoId) {

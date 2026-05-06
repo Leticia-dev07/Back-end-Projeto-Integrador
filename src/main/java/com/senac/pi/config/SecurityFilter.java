@@ -34,18 +34,17 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // =========================
-        // 🔥 IGNORAR ROTAS PÚBLICAS (SEM SEGURANÇA)
-        // =========================
+        // Ignorar rotas publicas sem segurança
+
         if (isPublicRoute(path)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            // =========================
-            // 🔐 VALIDAÇÃO JWT
-            // =========================
+
+            // Validação jwt
+
             String token = recoverToken(request);
 
             if (token != null) {
@@ -68,27 +67,25 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            // 🔥 Evita quebrar requisição com erro de token
+            // Evita quebrar requisição com o token
             SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
     }
 
-    // =========================
-    // 🔓 ROTAS PÚBLICAS
-    // =========================
+    // Rotas publicas
+
     private boolean isPublicRoute(String path) {
-        return path.startsWith("/certificados/") ||   // PDFs locais
-               path.startsWith("/auth/") ||           // login/register
-               path.startsWith("/v3/api-docs") ||     // swagger
+        return path.startsWith("/certificados/") ||   
+               path.startsWith("/auth/") ||          
+               path.startsWith("/v3/api-docs") ||     
                path.startsWith("/swagger-ui") ||
                path.startsWith("/swagger-ui.html");
     }
 
-    // =========================
-    // 🔑 RECUPERAR TOKEN
-    // =========================
+    // Recupera o token
+    
     private String recoverToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 

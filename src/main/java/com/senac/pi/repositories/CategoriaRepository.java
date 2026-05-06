@@ -8,6 +8,6 @@ import com.senac.pi.entities.Curso;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Long> {
-	// O Spring JPA consegue comparar o objeto Curso automaticamente pelo ID dele
+	
 	boolean existsByAreaAndCurso(String area, Curso curso);
 }

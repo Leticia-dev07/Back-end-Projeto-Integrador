@@ -21,7 +21,6 @@ public class NotificacaoEmail implements Serializable {
     private String assunto;
     private String corpo;
 
-    // 🔥 RELAÇÃO COM SUBMISSÃO
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "submissao_id")

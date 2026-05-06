@@ -11,7 +11,7 @@ import com.senac.pi.entities.Aluno;
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     
     /**
-     * Verifica se o aluno já possui o curso em sua lista de cursos (tabela de associação).
+     * Verifica se o aluno já possui o curso em sua lista de cursos 
      */
     @Query("SELECT COUNT(a) > 0 FROM Aluno a JOIN a.cursos c WHERE a.id = :alunoId AND c.id = :cursoId")
     boolean existsByAlunoIdAndCursoId(@Param("alunoId") Long alunoId, @Param("cursoId") Long cursoId);
@@ -23,7 +23,7 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("SELECT a FROM Aluno a JOIN a.cursos c WHERE c.id = :cursoId")
     List<Aluno> findByCursoId(@Param("cursoId") Long cursoId);
 
-    // --- VERIFICAÇÕES DE DUPLICIDADE ---
+    // Verifica duplicidade
 
     /**
      * NOVO: Busca o aluno retornando um Optional para tratarmos no Service na hora de vincular

@@ -36,7 +36,7 @@ public class AuthenticationResource {
         // Cria o token de credenciais para o Spring Security validar
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
         
-        // Valida e-mail e senha (usando o BCrypt configurado)
+        // Valida e-mail e senha usando o BCrypt configurado
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         // Se a validação passar, pegamos o usuário completo para acessar a Role

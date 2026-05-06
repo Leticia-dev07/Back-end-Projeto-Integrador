@@ -19,7 +19,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class SuperAdminService {
 
-    // Logger manual para rastrear ações de alto nível
     private static final Logger log = LoggerFactory.getLogger(SuperAdminService.class);
 
     @Autowired

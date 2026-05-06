@@ -33,12 +33,11 @@ public class Submissao implements Serializable {
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
-    // Novos campos substituindo a entidade Certificado
     private String nomeArquivo;
     private String tipoArquivo;
 
     @Lob
-    @Column(columnDefinition="LONGBLOB") // Importante para arquivos grandes no MySQL
+    @Column(columnDefinition="LONGBLOB") 
     private byte[] dadosArquivo;
     
     private String urlArquivo;
@@ -122,7 +121,6 @@ public class Submissao implements Serializable {
         this.categoria = categoria;
     }
 
-    // Getters e Setters dos novos campos de arquivo
     public String getNomeArquivo() {
         return nomeArquivo;
     }

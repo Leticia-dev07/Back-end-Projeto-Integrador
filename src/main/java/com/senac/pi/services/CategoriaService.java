@@ -22,7 +22,6 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class CategoriaService {
 
-    // Logger manual para evitar erros de compilação da IDE
     private static final Logger log = LoggerFactory.getLogger(CategoriaService.class);
 
     @Autowired
