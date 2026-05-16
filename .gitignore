@@ -1,0 +1,9 @@
+target/
+*.log
+logs/
+.sts4/
+.classpath
+.project
+.settings/
+*.class
+*.jar
