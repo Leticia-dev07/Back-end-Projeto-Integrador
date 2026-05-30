@@ -16,10 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.senac.pi.DTO.SubmissaoDTO;
 import com.senac.pi.entities.Aluno;
 import com.senac.pi.entities.Categoria;
+import com.senac.pi.entities.Curso;
 import com.senac.pi.entities.Submissao;
 import com.senac.pi.entities.enums.StatusSubmissao;
 import com.senac.pi.repositories.AlunoRepository;
 import com.senac.pi.repositories.CategoriaRepository;
+import com.senac.pi.repositories.CursoRepository;
 import com.senac.pi.repositories.SubmissaoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -40,6 +42,9 @@ public class SubmissaoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private CursoRepository cursoRepository; // <-- Novo repositório injetado
 
     @Autowired
     private FileService fileService; // Serviço de S3 (Supabase)
@@ -80,6 +85,10 @@ public class SubmissaoService {
             Categoria categoria = categoriaRepository.findById(entity.getCategoria().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
+            // <-- Nova validação para garantir que o curso existe
+            Curso curso = cursoRepository.findById(entity.getCurso().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
+
             // ==========================================
             // VALIDAÇÃO DE REGRA: SEMESTRE DINÂMICO
             // ==========================================
@@ -99,15 +108,16 @@ public class SubmissaoService {
                 log.info("### REGRA ### Validando limite para o 2º Semestre de {}", anoAtual);
             }
 
-            // Conta quantas submissões o aluno fez desde o início do semestre atual
-            long totalEnviado = repository.countByAlunoAndCategoriaInPeriod(
+            // <-- Atualizado para usar a query que filtra pelo ID do Curso também
+            long totalEnviado = repository.countByAlunoAndCategoriaAndCursoInPeriod(
                     aluno.getId(),
                     categoria.getId(),
+                    curso.getId(), 
                     inicioSemestre.toInstant()
             );
 
             if (totalEnviado >= categoria.getLimiteSubmissoesSemestre()) {
-                throw new RuntimeException("Limite de envios atingido para a categoria: " + categoria.getArea());
+                throw new RuntimeException("Limite de envios atingido para a categoria: " + categoria.getArea() + " neste curso.");
             }
             // ==========================================
 
@@ -116,10 +126,11 @@ public class SubmissaoService {
 
             entity.setNomeArquivo(arquivo.getOriginalFilename());
             entity.setTipoArquivo(arquivo.getContentType());
-            entity.setUrlArquivo(urlNuvem); // URL do Supabase salva no banco
+            entity.setUrlArquivo(urlNuvem); 
             
             entity.setAluno(aluno);
             entity.setCategoria(categoria);
+            entity.setCurso(curso); // <-- Vinculando o curso à submissão antes de salvar
             entity.setDataEnvio(Instant.now());
             entity.setStatus(StatusSubmissao.PENDENTE);
             entity.setHorasAproveitadas(categoria.getHorasPorCertificado());
@@ -145,11 +156,19 @@ public class SubmissaoService {
 
         submissao.setStatus(StatusSubmissao.APROVADO);
 
+        // ==========================================
+        // ATENÇÃO: REFATORAÇÃO DE HORAS ACUMULADAS
+        // ==========================================
+        // Mantive a lógica original para não quebrar o código agora, mas lembre-se 
+        // de migrar essa soma para uma tabela de Matrícula (Aluno + Curso) futuramente, 
+        // para não misturar as horas de cursos diferentes no mesmo aluno.
         Aluno aluno = submissao.getAluno();
         int horasAnteriores = (aluno.getHorasAcumuladas() != null) ? aluno.getHorasAcumuladas() : 0;
         aluno.setHorasAcumuladas(horasAnteriores + submissao.getHorasAproveitadas());
 
         alunoRepository.save(aluno);
+        // ==========================================
+
         submissao = repository.save(submissao);
 
         enviarEmailSilencioso(aluno.getEmail(), "Certificado Aprovado ✅",

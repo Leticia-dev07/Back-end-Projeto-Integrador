@@ -37,6 +37,10 @@ public class Submissao implements Serializable {
     private String tipoArquivo;
     
     private String urlArquivo;
+    
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
+    private Curso curso;
 
     public Submissao() {
     }
@@ -139,6 +143,14 @@ public class Submissao implements Serializable {
 
     public void setUrlArquivo(String urlArquivo) {
         this.urlArquivo = urlArquivo;
+    }
+    
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     @Override
