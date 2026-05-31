@@ -44,10 +44,10 @@ public class SubmissaoService {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
-    private CursoRepository cursoRepository; // <-- Novo repositório injetado
+    private CursoRepository cursoRepository;
 
     @Autowired
-    private FileService fileService; // Serviço de S3 (Supabase)
+    private FileService fileService; // Serviço de upload (Supabase/S3)
 
     @Transactional(readOnly = true)
     public List<SubmissaoDTO> findAll() {
@@ -72,7 +72,7 @@ public class SubmissaoService {
 
     @Transactional
     public SubmissaoDTO insert(Submissao entity, MultipartFile arquivo) {
-        log.info("### SUBMISSÃO ### Iniciando novo processo de submissão via S3...");
+        log.info("### SUBMISSÃO ### Iniciando novo processo de submissão via front-end...");
 
         if (arquivo == null || arquivo.isEmpty()) {
             throw new RuntimeException("O envio do arquivo de certificado é obrigatório.");
@@ -85,7 +85,6 @@ public class SubmissaoService {
             Categoria categoria = categoriaRepository.findById(entity.getCategoria().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
-            // <-- Nova validação para garantir que o curso existe
             Curso curso = cursoRepository.findById(entity.getCurso().getId())
                     .orElseThrow(() -> new EntityNotFoundException("Curso não encontrado"));
 
@@ -108,7 +107,6 @@ public class SubmissaoService {
                 log.info("### REGRA ### Validando limite para o 2º Semestre de {}", anoAtual);
             }
 
-            // <-- Atualizado para usar a query que filtra pelo ID do Curso também
             long totalEnviado = repository.countByAlunoAndCategoriaAndCursoInPeriod(
                     aluno.getId(),
                     categoria.getId(),
@@ -130,11 +128,23 @@ public class SubmissaoService {
             
             entity.setAluno(aluno);
             entity.setCategoria(categoria);
-            entity.setCurso(curso); // <-- Vinculando o curso à submissão antes de salvar
+            entity.setCurso(curso); 
             entity.setDataEnvio(Instant.now());
             entity.setStatus(StatusSubmissao.PENDENTE);
             entity.setHorasAproveitadas(categoria.getHorasPorCertificado());
 
+            // ==========================================
+            // AMARRAÇÃO DO CERTIFICADO (OCR)
+            // ==========================================
+            // Se o front-end enviou os dados lidos pela IA, nós garantimos que 
+            // a entidade Certificado saiba qual é a Submissão mãe dela antes de salvar.
+            if (entity.getCertificado() != null) {
+                log.info("### SUBMISSÃO ### Dados de OCR detectados no payload. Vinculando certificado.");
+                entity.getCertificado().setSubmissao(entity);
+            }
+            // ==========================================
+
+            // Salva a submissão e o certificado automaticamente (devido ao CascadeType.ALL)
             entity = repository.save(entity);
 
             log.info("### SUBMISSÃO ### Sucesso! Submissão ID {} salva. URL: {}", entity.getId(), urlNuvem);
@@ -158,10 +168,8 @@ public class SubmissaoService {
 
         // ==========================================
         // ATENÇÃO: REFATORAÇÃO DE HORAS ACUMULADAS
+        // Lembrete para migrar isso para a tabela de Matrícula no futuro
         // ==========================================
-        // Mantive a lógica original para não quebrar o código agora, mas lembre-se 
-        // de migrar essa soma para uma tabela de Matrícula (Aluno + Curso) futuramente, 
-        // para não misturar as horas de cursos diferentes no mesmo aluno.
         Aluno aluno = submissao.getAluno();
         int horasAnteriores = (aluno.getHorasAcumuladas() != null) ? aluno.getHorasAcumuladas() : 0;
         aluno.setHorasAcumuladas(horasAnteriores + submissao.getHorasAproveitadas());

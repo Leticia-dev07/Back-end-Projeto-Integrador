@@ -12,7 +12,8 @@ public record SubmissaoDTO(
 	    String nomeAluno,
 	    String nomeCategoria,
 	    String urlCertificado,
-	    String nomeCurso // <-- Novo campo
+	    String nomeCurso,
+	    CertificadoDTO dadosOcr
 	) {
 	    public SubmissaoDTO(Submissao entity) {
 	        this(
@@ -24,7 +25,8 @@ public record SubmissaoDTO(
 	            entity.getAluno() != null ? entity.getAluno().getName() : "Não identificado",
 	            entity.getCategoria() != null ? entity.getCategoria().getArea() : "Sem categoria",
 	            entity.getUrlArquivo(),
-	            entity.getCurso() != null ? entity.getCurso().getNome() : "Sem curso" // <-- Mapeamento
+	            entity.getCurso() != null ? entity.getCurso().getNome() : "Sem curso",
+	            entity.getCertificado() != null ? new CertificadoDTO(entity.getCertificado()) : null
 	        );
 	    }
 	}

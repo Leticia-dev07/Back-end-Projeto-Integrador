@@ -41,6 +41,9 @@ public class Submissao implements Serializable {
     @ManyToOne
     @JoinColumn(name = "curso_id")
     private Curso curso;
+    
+    @OneToOne(mappedBy = "submissao", cascade = CascadeType.ALL)
+    private Certificado certificado;
 
     public Submissao() {
     }
@@ -151,6 +154,14 @@ public class Submissao implements Serializable {
 
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public Certificado getCertificado() {
+        return certificado;
+    }
+
+    public void setCertificado(Certificado certificado) {
+        this.certificado = certificado;
     }
 
     @Override
