@@ -49,10 +49,20 @@ public class SubmissaoService {
     @Autowired
     private FileService fileService; // Serviço de upload (Supabase/S3)
 
+    // AVISO: Este método retorna o banco inteiro. Use com cautela (ex: painel de Super Admin)
     @Transactional(readOnly = true)
     public List<SubmissaoDTO> findAll() {
-        log.info("### SUBMISSÃO ### Listando todas as submissões.");
+        log.info("### SUBMISSÃO ### Listando TODAS as submissões do sistema.");
         return repository.findAll().stream().map(SubmissaoDTO::new).collect(Collectors.toList());
+    }
+
+    // NOVO MÉTODO: Retorna apenas as submissões de um curso específico (Usar para o Coordenador)
+    @Transactional(readOnly = true)
+    public List<SubmissaoDTO> findByCurso(Long cursoId) {
+        log.info("### SUBMISSÃO ### Listando submissões filtradas para o curso ID: {}", cursoId);
+        return repository.findByCursoId(cursoId).stream()
+                .map(SubmissaoDTO::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -136,15 +146,12 @@ public class SubmissaoService {
             // ==========================================
             // AMARRAÇÃO DO CERTIFICADO (OCR)
             // ==========================================
-            // Se o front-end enviou os dados lidos pela IA, nós garantimos que 
-            // a entidade Certificado saiba qual é a Submissão mãe dela antes de salvar.
             if (entity.getCertificado() != null) {
-                log.info("### SUBMISSÃO ### Dados de OCR detectados no payload. Vinculando certificado.");
+                log.info("### SUBMISSÃO ### Dados complementares detectados no payload. Vinculando certificado.");
                 entity.getCertificado().setSubmissao(entity);
             }
             // ==========================================
 
-            // Salva a submissão e o certificado automaticamente (devido ao CascadeType.ALL)
             entity = repository.save(entity);
 
             log.info("### SUBMISSÃO ### Sucesso! Submissão ID {} salva. URL: {}", entity.getId(), urlNuvem);
@@ -166,17 +173,11 @@ public class SubmissaoService {
 
         submissao.setStatus(StatusSubmissao.APROVADO);
 
-        // ==========================================
-        // ATENÇÃO: REFATORAÇÃO DE HORAS ACUMULADAS
-        // Lembrete para migrar isso para a tabela de Matrícula no futuro
-        // ==========================================
         Aluno aluno = submissao.getAluno();
         int horasAnteriores = (aluno.getHorasAcumuladas() != null) ? aluno.getHorasAcumuladas() : 0;
         aluno.setHorasAcumuladas(horasAnteriores + submissao.getHorasAproveitadas());
 
         alunoRepository.save(aluno);
-        // ==========================================
-
         submissao = repository.save(submissao);
 
         enviarEmailSilencioso(aluno.getEmail(), "Certificado Aprovado ✅",

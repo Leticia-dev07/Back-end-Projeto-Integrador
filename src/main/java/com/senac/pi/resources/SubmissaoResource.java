@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,47 +28,59 @@ import com.senac.pi.services.SubmissaoService;
 @CrossOrigin(origins = "*")
 public class SubmissaoResource {
 
-	@Autowired
-	private SubmissaoService service;
+    @Autowired
+    private SubmissaoService service;
 
-	@GetMapping
-	public ResponseEntity<List<SubmissaoDTO>> findAll() {
-		List<SubmissaoDTO> list = service.findAll();
-		return ResponseEntity.ok().body(list);
-	}
+    // [CORREÇÃO] Rota atualizada para aceitar o ID do curso como filtro dinâmico
+    @GetMapping
+    public ResponseEntity<List<SubmissaoDTO>> findAll(
+            @RequestParam(value = "cursoId", required = false) Long cursoId) {
+        
+        List<SubmissaoDTO> list;
+        
+        // Se a requisição enviar o cursoId, aplica o filtro de segurança do Coordenador
+        // Se vier vazio, puxa tudo (para uso exclusivo do Super Admin)
+        if (cursoId != null) {
+            list = service.findByCurso(cursoId);
+        } else {
+            list = service.findAll();
+        }
+        
+        return ResponseEntity.ok().body(list);
+    }
 
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<SubmissaoDTO> findById(@PathVariable Long id) {
-		SubmissaoDTO dto = service.findById(id);
-		return ResponseEntity.ok().body(dto);
-	}
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<SubmissaoDTO> findById(@PathVariable Long id) {
+        SubmissaoDTO dto = service.findById(id);
+        return ResponseEntity.ok().body(dto);
+    }
 
-	/* * O endpoint /arquivo foi removido. 
-	 * O frontend agora deve usar o campo 'urlArquivo' presente no SubmissaoDTO 
-	 * para exibir o certificado diretamente.
-	 */
+    /* * O endpoint /arquivo foi removido. 
+     * O frontend agora deve usar o campo 'urlArquivo' presente no SubmissaoDTO 
+     * para exibir o certificado diretamente.
+     */
 
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<SubmissaoDTO> insert(
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SubmissaoDTO> insert(
             @RequestPart("submissao") Submissao obj,
-			@RequestPart("file") MultipartFile file) {
+            @RequestPart("file") MultipartFile file) {
 
-		SubmissaoDTO dto = service.insert(obj, file);
+        SubmissaoDTO dto = service.insert(obj, file);
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(dto.id()).toUri();
-		return ResponseEntity.created(uri).body(dto);
-	}
+        return ResponseEntity.created(uri).body(dto);
+    }
 
-	@PutMapping(value = "/{id}/aprovar")
-	public ResponseEntity<SubmissaoDTO> aprovar(@PathVariable Long id) {
-		SubmissaoDTO dto = service.aprovar(id);
-		return ResponseEntity.ok().body(dto);
-	}
+    @PutMapping(value = "/{id}/aprovar")
+    public ResponseEntity<SubmissaoDTO> aprovar(@PathVariable Long id) {
+        SubmissaoDTO dto = service.aprovar(id);
+        return ResponseEntity.ok().body(dto);
+    }
 
-	@PutMapping(value = "/{id}/rejeitar")
-	public ResponseEntity<SubmissaoDTO> rejeitar(@PathVariable Long id, @RequestBody String observacao) {
-		SubmissaoDTO dto = service.rejeitar(id, observacao);
-		return ResponseEntity.ok().body(dto);
-	}
+    @PutMapping(value = "/{id}/rejeitar")
+    public ResponseEntity<SubmissaoDTO> rejeitar(@PathVariable Long id, @RequestBody String observacao) {
+        SubmissaoDTO dto = service.rejeitar(id, observacao);
+        return ResponseEntity.ok().body(dto);
+    }
 }
