@@ -65,6 +65,26 @@ public class SubmissaoService {
                 .map(SubmissaoDTO::new)
                 .collect(Collectors.toList());
     }
+    
+ // NOVO MÉTODO: Retorna o histórico do aluno (com ou sem filtro de curso)
+    @Transactional(readOnly = true)
+    public List<SubmissaoDTO> findByAluno(Long alunoId, Long cursoId) {
+        log.info("### SUBMISSÃO ### Buscando histórico do aluno ID: {}, Curso ID: {}", alunoId, cursoId);
+        
+        List<Submissao> list;
+        
+        if (cursoId != null) {
+            // Se vier o ID do curso, usa o método que você já tinha notado!
+            list = repository.findByAlunoIdAndCursoId(alunoId, cursoId);
+        } else {
+            // Se não vier, traz todo o histórico do aluno
+            list = repository.findByAlunoId(alunoId);
+        }
+        
+        return list.stream()
+                .map(SubmissaoDTO::new)
+                .collect(Collectors.toList());
+    }
 
     @Transactional(readOnly = true)
     public SubmissaoDTO findById(Long id) {

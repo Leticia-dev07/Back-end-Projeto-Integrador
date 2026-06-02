@@ -54,6 +54,20 @@ public class SubmissaoResource {
         SubmissaoDTO dto = service.findById(id);
         return ResponseEntity.ok().body(dto);
     }
+    
+    /**
+     * Retorna o histórico de submissões de um aluno específico.
+     * Aceita o cursoId como parâmetro opcional na URL (?cursoId=X).
+     * Endpoint: GET /submissoes/aluno/{alunoId}
+     */
+    @GetMapping(value = "/aluno/{alunoId}")
+    public ResponseEntity<List<SubmissaoDTO>> findByAluno(
+            @PathVariable Long alunoId,
+            @RequestParam(value = "cursoId", required = false) Long cursoId) {
+        
+        List<SubmissaoDTO> list = service.findByAluno(alunoId, cursoId);
+        return ResponseEntity.ok().body(list);
+    }
 
     /* * O endpoint /arquivo foi removido. 
      * O frontend agora deve usar o campo 'urlArquivo' presente no SubmissaoDTO 

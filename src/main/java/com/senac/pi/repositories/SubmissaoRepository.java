@@ -23,4 +23,7 @@ public interface SubmissaoRepository extends JpaRepository<Submissao, Long> {
 
     // NOVO: Método para listar todas as submissões de um curso específico (Painel do Coordenador)
     List<Submissao> findByCursoId(Long cursoId);
+    
+ // Método útil para listar TODAS as submissões de um aluno (independente do curso)
+    List<Submissao> findByAlunoId(Long alunoId);
 }
