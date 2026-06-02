@@ -1,5 +1,9 @@
 package com.senac.pi.services;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.senac.pi.DTO.AlunoDTO;
 import com.senac.pi.entities.Aluno;
@@ -96,35 +101,29 @@ public class AlunoService {
                     return new EntityNotFoundException("Curso não encontrado");
                 });
 
-        // NOVO: Verifica se o aluno já existe pelo e-mail
         Optional<Aluno> alunoExistente = repository.findByEmail(dto.email());
 
         if (alunoExistente.isPresent()) {
             Aluno entity = alunoExistente.get();
             
-            // Trava de segurança: se o e-mail for o mesmo, a matrícula também deve bater
             if (!entity.getMatricula().equals(dto.matricula())) {
                 throw new RuntimeException("Este e-mail já está em uso com uma matrícula diferente!");
             }
 
-            // Verifica se já está matriculado neste curso específico
             if (repository.existsByAlunoIdAndCursoId(entity.getId(), cursoId)) {
                 throw new RuntimeException("O aluno já está matriculado neste curso!");
             }
 
-            // Apenas adiciona o novo vínculo e salva (não reseta a senha nem cria novo usuário)
             entity.addCurso(curso);
             entity = repository.save(entity);
             log.info("Aluno {} já existia no banco e foi matriculado no novo curso!", entity.getName());
             return new AlunoDTO(entity);
             
         } else {
-            // Se o e-mail não existe, valida se a matrícula já foi usada por outro e-mail
             if (repository.existsByMatricula(dto.matricula())) {
                 throw new RuntimeException("Esta matrícula já está cadastrada para outro aluno!");
             }
 
-            // Cria o aluno do zero e vincula
             Aluno entity = new Aluno();
             copyDtoToEntity(dto, entity);
 
@@ -209,6 +208,86 @@ public class AlunoService {
         aluno.getCursos().remove(curso);
         repository.save(aluno);
         log.info("Vínculo removido com sucesso.");
+    }
+
+    /**
+     * [NOVO] Processa o CSV, cria os alunos (ou reutiliza se o e-mail existir)
+     * e os vincula ao curso selecionado.
+     */
+    @Transactional
+    public List<Aluno> cadastrarEmMassaCsv(MultipartFile file, Long cursoId) {
+        log.info("Iniciando importação de CSV para o curso ID: {}", cursoId);
+        if (file.isEmpty()) throw new RuntimeException("O arquivo CSV está vazio.");
+
+        List<Aluno> alunosSalvos = new ArrayList<>();
+        
+        // Busca o curso apenas uma vez, caso o ID tenha sido passado
+        Curso curso = null;
+        if (cursoId != null) {
+            curso = cursoRepository.findById(cursoId)
+                    .orElseThrow(() -> new RuntimeException("Curso não encontrado para vinculo no CSV."));
+        }
+
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+
+            String linha;
+            boolean primeiraLinha = true;
+
+            while ((linha = br.readLine()) != null) {
+                if (primeiraLinha) {
+                    primeiraLinha = false;
+                    continue; // Pula o cabeçalho
+                }
+
+                // O Excel no Brasil costuma separar por ; então é seguro separar por vírgula ou ponto e vírgula
+                String[] dados = linha.split("[,;]");
+
+                // Espera pelo menos: Nome, Email, Matricula, Turma
+                if (dados.length >= 4) {
+                    String nome = dados[0].trim();
+                    String email = dados[1].trim();
+                    String matricula = dados[2].trim();
+                    String turma = dados[3].trim();
+
+                    // Verifica se o aluno já existe pelo e-mail
+                    Optional<Aluno> alunoOpt = repository.findByEmail(email);
+                    Aluno aluno;
+
+                    if (alunoOpt.isPresent()) {
+                        aluno = alunoOpt.get();
+                        // Se o aluno existe, apenas vincula ao curso (se já não estiver vinculado)
+                        if (curso != null && !repository.existsByAlunoIdAndCursoId(aluno.getId(), cursoId)) {
+                            aluno.addCurso(curso);
+                            aluno = repository.save(aluno);
+                        }
+                    } else {
+                        // Se não existe, cria do zero
+                        aluno = new Aluno();
+                        aluno.setName(nome);
+                        aluno.setEmail(email);
+                        aluno.setMatricula(matricula);
+                        aluno.setTurma(turma);
+                        aluno.setSenhaHash(passwordEncoder.encode("123456")); // Senha padrão
+                        aluno.setRole(UserRole.ALUNO);
+                        aluno.setHorasAcumuladas(0);
+                        
+                        if (curso != null) {
+                            aluno.addCurso(curso);
+                        }
+                        aluno = repository.save(aluno);
+                    }
+                    
+                    alunosSalvos.add(aluno);
+                }
+            }
+            log.info("Importação de CSV concluída com sucesso! {} alunos processados.", alunosSalvos.size());
+        } catch (Exception e) {
+            log.error("Erro ao ler arquivo CSV: {}", e.getMessage());
+            throw new RuntimeException("Erro ao processar o CSV: " + e.getMessage());
+        }
+        
+        return alunosSalvos;
     }
 
     private void validarDuplicidade(AlunoDTO dto) {
