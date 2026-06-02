@@ -61,6 +61,7 @@ public class SecurityConfig {
                 // Endpoints que exigem autenticação genérica
                 .requestMatchers(HttpMethod.GET, "/submissoes/**").authenticated()
                 .requestMatchers(HttpMethod.GET, "/cursos/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/submissoes/**").authenticated()
 
                 // Regras de Alunos por Perfil
                 .requestMatchers(HttpMethod.GET, "/alunos/**")
