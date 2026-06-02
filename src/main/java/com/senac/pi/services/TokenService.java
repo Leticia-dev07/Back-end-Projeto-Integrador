@@ -31,6 +31,7 @@ public class TokenService {
                     .withIssuer("pi-senac")
                     .withSubject(user.getEmail())
                     .withClaim("role", user.getRole().name())
+                    .withClaim("userId", user.getId())   
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             
