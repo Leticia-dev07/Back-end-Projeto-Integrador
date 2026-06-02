@@ -39,6 +39,14 @@ public class CategoriaService {
     }
 
     @Transactional(readOnly = true)
+    public List<CategoriaDTO> findByCursoId(Long cursoId) {
+    log.info("Listando categorias do curso ID: {}", cursoId);
+    return repository.findByCursoId(cursoId).stream()
+            .map(CategoriaDTO::new)
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public CategoriaDTO findById(Long id) {
         log.info("Buscando categoria pelo ID: {}", id);
         Categoria entity = repository.findById(id)
