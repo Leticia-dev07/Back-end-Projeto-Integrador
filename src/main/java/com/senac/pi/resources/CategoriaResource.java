@@ -3,6 +3,7 @@ package com.senac.pi.resources;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,14 +33,18 @@ public class CategoriaResource {
     private CategoriaService service;
 
     @GetMapping
-    public ResponseEntity<List<CategoriaDTO>> findAll() {
-        return ResponseEntity.ok().body(service.findAll());
+    public ResponseEntity<List<CategoriaDTO>> findAll(
+        @RequestParam(required = false) Long cursoId) {
+    if (cursoId != null) {
+        return ResponseEntity.ok().body(service.findByCursoId(cursoId));
     }
-
+    return ResponseEntity.ok().body(service.findAll());
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<CategoriaDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(service.findById(id));
-    }
+}
 
     @PostMapping
     public ResponseEntity<CategoriaDTO> insert(@RequestBody Categoria obj) {
