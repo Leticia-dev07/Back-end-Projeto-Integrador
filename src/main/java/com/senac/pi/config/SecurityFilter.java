@@ -50,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (token != null) {
                 String login = tokenService.validateToken(token);
 
-                if (login != null) {
+                if (login != null && !login.isBlank()) {
                     UserDetails user = userRepository.findByEmail(login).orElse(null);
 
                     if (user != null) {
