@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -202,10 +203,14 @@ public class SubmissaoService {
     }
 
     private void enviarEmailSilencioso(String para, String assunto, String corpo) {
-        try {
-            emailService.enviarEmail(para, assunto, corpo);
-        } catch (Exception e) {
-            log.error("### EMAIL ### Falha: {}", e.getMessage());
-        }
+        // Joga o envio de e-mail para uma Thread em segundo plano (Assíncrono)
+        CompletableFuture.runAsync(() -> {
+            try {
+                emailService.enviarEmail(para, assunto, corpo);
+                log.info("### EMAIL ### E-mail enviado com sucesso em background para: {}", para);
+            } catch (Exception e) {
+                log.error("### EMAIL ### Falha ao enviar para {}: {}", para, e.getMessage());
+            }
+        });
     }
 }
