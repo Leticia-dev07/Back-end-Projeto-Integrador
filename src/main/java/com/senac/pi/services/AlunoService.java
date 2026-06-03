@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.senac.pi.DTO.AlunoDTO;
+import com.senac.pi.DTO.CursoDTO;
 import com.senac.pi.entities.Aluno;
 import com.senac.pi.entities.Curso;
 import com.senac.pi.entities.enums.UserRole;
@@ -67,6 +68,22 @@ public class AlunoService {
         return list.stream()
             .map(AlunoDTO::new)
             .collect(Collectors.toList());
+    }
+
+    /**
+     * [NOVO] Retorna a lista de cursos vinculados a um aluno específico.
+     */
+    @Transactional(readOnly = true)
+    public List<CursoDTO> findCursosByAlunoId(Long alunoId) {
+        log.info("Listando cursos matriculados do aluno ID: {}", alunoId);
+        
+        if (!repository.existsById(alunoId)) {
+            throw new EntityNotFoundException("Aluno não encontrado com ID: " + alunoId);
+        }
+
+        return repository.findCursosByAlunoId(alunoId).stream()
+                .map(CursoDTO::new)
+                .toList(); // Sintaxe nativa e mais limpa no Java 25
     }
 
     @Transactional

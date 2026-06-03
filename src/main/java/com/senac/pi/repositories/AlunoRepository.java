@@ -1,12 +1,14 @@
 package com.senac.pi.repositories;
 
 import java.util.List;
-import java.util.Optional; // <-- Nova importação
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import com.senac.pi.entities.Aluno;
+import com.senac.pi.entities.Curso;
 
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     
@@ -23,7 +25,11 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("SELECT a FROM Aluno a JOIN a.cursos c WHERE c.id = :cursoId")
     List<Aluno> findByCursoId(@Param("cursoId") Long cursoId);
 
-    // Verifica duplicidade
+    /**
+     * [NOVO] Busca os cursos matriculados de um aluno específico.
+     */
+    @Query("SELECT c FROM Aluno a JOIN a.cursos c WHERE a.id = :alunoId")
+    List<Curso> findCursosByAlunoId(@Param("alunoId") Long alunoId);
 
     /**
      * NOVO: Busca o aluno retornando um Optional para tratarmos no Service na hora de vincular

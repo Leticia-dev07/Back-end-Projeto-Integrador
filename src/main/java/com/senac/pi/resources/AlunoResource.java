@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.senac.pi.DTO.AlunoDTO;
+import com.senac.pi.DTO.CursoDTO;
 import com.senac.pi.entities.Aluno;
 import com.senac.pi.services.AlunoService;
 
@@ -59,6 +60,15 @@ public class AlunoResource {
     @GetMapping(value = "/curso/{cursoId}")
     public ResponseEntity<List<AlunoDTO>> findByCurso(@PathVariable Long cursoId) {
         List<AlunoDTO> list = service.findByCurso(cursoId);
+        return ResponseEntity.ok().body(list);
+    }
+
+    /**
+     * [NOVO] Retorna a lista de cursos em que um aluno específico está matriculado.
+     */
+    @GetMapping(value = "/{id}/cursos")
+    public ResponseEntity<List<CursoDTO>> findCursosDoAluno(@PathVariable Long id) {
+        List<CursoDTO> list = service.findCursosByAlunoId(id);
         return ResponseEntity.ok().body(list);
     }
 
@@ -123,7 +133,7 @@ public class AlunoResource {
     }
 
     /**
-     * [NOVO] Realiza o cadastro em massa de alunos via arquivo CSV.
+     * Realiza o cadastro em massa de alunos via arquivo CSV.
      * Se o cursoId for informado na requisição, já vincula os alunos automaticamente ao curso.
      */
     @PostMapping(value = "/upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -131,7 +141,6 @@ public class AlunoResource {
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "cursoId", required = false) Long cursoId) {
         
-        // Repassando o arquivo e o ID do curso (se existir) para a camada de serviço
         List<Aluno> cadastrados = service.cadastrarEmMassaCsv(file, cursoId);
         return ResponseEntity.ok().body(cadastrados);
     }
